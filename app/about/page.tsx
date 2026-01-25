@@ -1,74 +1,80 @@
+import { FiUser, FiTarget, FiMail, FiTrendingUp } from 'react-icons/fi';
+import Link from 'next/link';
+
 export const metadata = {
-  title: 'About Us - Umbi',
-  description: 'Learn more about Umbi and our mission to provide insightful content.',
+  title: 'About Umbi - Our Mission & Story',
+  description: 'Learn more about Umbi, a platform dedicated to helping you master finance, technology, and wellness.',
 };
 
 export default function AboutPage() {
   return (
-    <div style={{ backgroundColor: 'var(--color-neutral-50)' }}>
-      <section className="py-16" style={{ background: 'linear-gradient(135deg, var(--color-primary-500), var(--color-primary-700))' }}>
-        <div className="container-custom">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4" style={{ fontFamily: 'var(--font-display)' }}>
+    <div style={{ backgroundColor: 'var(--color-neutral-50)', minHeight: '100vh' }}>
+      
+      {/* 1. 히어로 섹션 */}
+      <section className="py-20 bg-white border-b border-neutral-200">
+        <div className="container-custom text-center">
+          <div className="inline-flex items-center justify-center p-3 bg-indigo-100 rounded-full text-indigo-700 mb-6">
+            <FiUser size={24} />
+          </div>
+          <h1 className="text-4xl md:text-5xl font-bold mb-6" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-neutral-900)' }}>
             About Umbi
           </h1>
-          <p className="text-xl text-white opacity-90 max-w-2xl">
-            Your trusted source for insights on finance, technology, and wellness.
+          <p className="text-xl max-w-2xl mx-auto leading-relaxed" style={{ color: 'var(--color-neutral-600)' }}>
+            We bridge the gap between complex information and your daily life. 
+            Our mission is to provide clear, actionable insights in Finance, Tech, and Wellness.
           </p>
         </div>
       </section>
 
-      <section className="py-16">
-        <div className="container-custom max-w-4xl">
-          <div className="bg-white rounded-2xl p-8 md:p-12" style={{ boxShadow: 'var(--shadow-soft)' }}>
-            <h2 className="text-3xl font-bold mb-6" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-neutral-900)' }}>
-              Our Mission
-            </h2>
-            <p className="text-lg mb-6" style={{ color: 'var(--color-neutral-700)' }}>
-              At Umbi, we believe that everyone deserves access to high-quality, actionable information that can improve their lives. Our mission is to provide insightful, well-researched content across three key areas that matter most to modern professionals.
-            </p>
-
-            <h2 className="text-3xl font-bold mb-6 mt-12" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-neutral-900)' }}>
-              What We Cover
-            </h2>
+      {/* 2. 미션 섹션 */}
+      <section className="py-20">
+        <div className="container-custom">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div className="bg-white p-8 rounded-3xl shadow-sm border border-neutral-100">
+              <h2 className="text-2xl font-bold mb-4 flex items-center gap-2" style={{ fontFamily: 'var(--font-display)' }}>
+                <FiTarget className="text-indigo-600" /> Our Mission
+              </h2>
+              <p className="text-neutral-600 mb-4 leading-relaxed">
+                In a world overflowing with information, clarity is power. Umbi was founded with a simple goal: to curate high-quality knowledge that empowers you to make better decisions.
+              </p>
+              <p className="text-neutral-600 leading-relaxed">
+                Whether you&apos;re looking to grow your wealth, adopt new technologies, or improve your health, we are here to guide you every step of the way.
+              </p>
+            </div>
             
-            <div className="space-y-8">
-              <div>
-                <h3 className="text-2xl font-bold mb-3" style={{ fontFamily: 'var(--font-display)', color: '#10b981' }}>
-                  Personal Finance
-                </h3>
-                <p className="text-lg" style={{ color: 'var(--color-neutral-700)' }}>
-                  We help you take control of your financial future with expert advice on budgeting, investing, saving, and building long-term wealth. Our finance content is designed to be accessible to beginners while providing valuable insights for experienced investors.
-                </p>
+            <div className="space-y-6">
+              <div className="bg-emerald-50 p-6 rounded-2xl border border-emerald-100">
+                <h3 className="font-bold text-emerald-800 text-lg mb-2">💰 Finance</h3>
+                <p className="text-emerald-700">Smart strategies for saving, investing, and achieving financial freedom.</p>
               </div>
-
-              <div>
-                <h3 className="text-2xl font-bold mb-3" style={{ fontFamily: 'var(--font-display)', color: '#3b82f6' }}>
-                  Tech & Productivity
-                </h3>
-                <p className="text-lg" style={{ color: 'var(--color-neutral-700)' }}>
-                  Stay ahead of the curve with our coverage of the latest technology trends, tools, and productivity hacks. We review apps, share workflow optimization techniques, and help you leverage technology to work smarter, not harder.
-                </p>
+              <div className="bg-blue-50 p-6 rounded-2xl border border-blue-100">
+                <h3 className="font-bold text-blue-800 text-lg mb-2">💻 Tech</h3>
+                <p className="text-blue-700">Reviews and guides on the latest tools to boost your productivity.</p>
               </div>
-
-              <div>
-                <h3 className="text-2xl font-bold mb-3" style={{ fontFamily: 'var(--font-display)', color: '#ef4444' }}>
-                  Health & Wellness
-                </h3>
-                <p className="text-lg" style={{ color: 'var(--color-neutral-700)' }}>
-                  Achieve your best self with our evidence-based guides on fitness, nutrition, mental health, and lifestyle optimization. We believe that true success includes physical and mental well-being, not just financial prosperity.
-                </p>
+              <div className="bg-rose-50 p-6 rounded-2xl border border-rose-100">
+                <h3 className="font-bold text-rose-800 text-lg mb-2">❤️ Wellness</h3>
+                <p className="text-rose-700">Evidence-based advice for a healthier body and a sharper mind.</p>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
 
-            <h2 className="text-3xl font-bold mb-6 mt-12" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-neutral-900)' }}>
-              Our Commitment
-            </h2>
-            <p className="text-lg mb-6" style={{ color: 'var(--color-neutral-700)' }}>
-              Every article on Umbi is thoroughly researched and written with your best interests in mind. We're committed to providing accurate, up-to-date information that you can trust and apply to your own life.
-            </p>
-            <p className="text-lg" style={{ color: 'var(--color-neutral-700)' }}>
-              Thank you for being part of the Umbi community. We're excited to be part of your journey toward financial freedom, professional excellence, and optimal health.
-            </p>
+      {/* 3. 하단 컨택 섹션 */}
+      <section className="py-20 bg-neutral-900 text-white">
+        <div className="container-custom text-center">
+          <FiTrendingUp className="mx-auto text-4xl mb-6 text-indigo-400" />
+          <h2 className="text-3xl font-bold mb-4">Ready to upgrade your life?</h2>
+          <p className="text-neutral-400 mb-8 max-w-xl mx-auto">
+            Join thousands of readers who trust Umbi for their daily dose of insight.
+          </p>
+          <div className="flex justify-center gap-4">
+            <Link href="/" className="px-8 py-3 bg-white text-neutral-900 font-bold rounded-xl hover:bg-neutral-100 transition-colors">
+              Read Articles
+            </Link>
+            <a href="mailto:contact@umbi.com" className="px-8 py-3 border border-neutral-700 text-white font-bold rounded-xl hover:bg-neutral-800 transition-colors flex items-center gap-2">
+              <FiMail /> Contact Us
+            </a>
           </div>
         </div>
       </section>
