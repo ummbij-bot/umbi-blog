@@ -1,4 +1,5 @@
 import BlogCard from '@/components/blog/BlogCard';
+import { getPostsByCategory } from '@/lib/posts';
 
 export const metadata = {
   title: 'Health & Wellness - Umbi',
@@ -6,29 +7,7 @@ export const metadata = {
 };
 
 export default function WellnessPage() {
-  const posts = [
-    {
-      title: '7-Day Meal Prep Guide for Busy Professionals',
-      excerpt: 'Simplify your week with healthy, delicious meals that you can prepare in advance.',
-      date: 'Jan 23, 2026',
-      category: 'Wellness',
-      slug: '7-day-meal-prep-guide',
-    },
-    {
-      title: '15-Minute Morning Workout Routine for Beginners',
-      excerpt: 'Start your day right with this simple yet effective workout routine that requires no equipment.',
-      date: 'Jan 21, 2026',
-      category: 'Wellness',
-      slug: '15-minute-morning-workout',
-    },
-    {
-      title: 'The Science of Better Sleep: 10 Evidence-Based Tips',
-      excerpt: 'Improve your sleep quality with scientifically proven strategies for deeper, more restorative rest.',
-      date: 'Jan 17, 2026',
-      category: 'Wellness',
-      slug: 'science-of-better-sleep',
-    },
-  ];
+  const posts = getPostsByCategory('wellness');
 
   return (
     <div style={{ backgroundColor: 'var(--color-neutral-50)' }}>
@@ -47,7 +26,14 @@ export default function WellnessPage() {
         <div className="container-custom">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {posts.map((post) => (
-              <BlogCard key={post.slug} {...post} />
+              <BlogCard 
+                key={post.slug}
+                title={post.title}
+                excerpt={post.excerpt}
+                date={post.date}
+                category="Wellness"
+                slug={post.slug}
+              />
             ))}
           </div>
         </div>

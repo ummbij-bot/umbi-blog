@@ -1,4 +1,5 @@
 import BlogCard from '@/components/blog/BlogCard';
+import { getPostsByCategory } from '@/lib/posts';
 
 export const metadata = {
   title: 'Personal Finance - Umbi',
@@ -6,29 +7,7 @@ export const metadata = {
 };
 
 export default function FinancePage() {
-  const posts = [
-    {
-      title: '10 Simple Ways to Save Money Every Month',
-      excerpt: 'Discover practical strategies to cut expenses and boost your savings without sacrificing your lifestyle.',
-      date: 'Jan 20, 2026',
-      category: 'Finance',
-      slug: '10-ways-save-money',
-    },
-    {
-      title: 'Investing 101: A Beginner\'s Guide to the Stock Market',
-      excerpt: 'Learn the fundamentals of stock market investing and how to build a diversified portfolio.',
-      date: 'Jan 18, 2026',
-      category: 'Finance',
-      slug: 'investing-101-beginners-guide',
-    },
-    {
-      title: 'How to Create a Budget That Actually Works',
-      excerpt: 'Master the art of budgeting with these proven techniques that help you take control of your finances.',
-      date: 'Jan 15, 2026',
-      category: 'Finance',
-      slug: 'create-budget-that-works',
-    },
-  ];
+  const posts = getPostsByCategory('finance');
 
   return (
     <div style={{ backgroundColor: 'var(--color-neutral-50)' }}>
@@ -47,7 +26,14 @@ export default function FinancePage() {
         <div className="container-custom">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {posts.map((post) => (
-              <BlogCard key={post.slug} {...post} />
+              <BlogCard 
+                key={post.slug}
+                title={post.title}
+                excerpt={post.excerpt}
+                date={post.date}
+                category="Finance"
+                slug={post.slug}
+              />
             ))}
           </div>
         </div>
