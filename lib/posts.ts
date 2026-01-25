@@ -83,7 +83,7 @@ A successful budget isn't about perfection—it's about progress.
     title: 'Building Your Emergency Fund: A Complete Guide',
     excerpt: 'Learn how to build a financial safety net that protects you from unexpected expenses and provides peace of mind.',
     // 👇 [수정됨] 확실하게 작동하는 새 이미지 (저금통)
-    image: 'https://images.unsplash.com/photo-1534951009808-766178b47a8e?q=80&w=1000&auto=format&fit=crop',
+  image: 'https://images.unsplash.com/photo-1579621970795-87facc2f976d?q=80&w=1000&auto=format&fit=crop',
     content: `
 # Building Your Emergency Fund: A Complete Guide
 
