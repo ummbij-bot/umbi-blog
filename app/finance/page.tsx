@@ -33,6 +33,7 @@ export default function FinancePage() {
                 date={post.date}
                 category="Finance"
                 slug={post.slug}
+                image={post.image}
               />
             ))}
           </div>
