@@ -9,14 +9,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  async rewrites() {
-    return [
-      {
-        source: '/sitemap.xml',
-        destination: '/api/raw-sitemap',
-      },
-    ];
-  },
+  // rewrites 부분은 삭제했습니다. 이제 필요 없습니다!
 };
 
 export default nextConfig;
