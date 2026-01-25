@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   title: 'Umbi - Finance, Tech, Wellness',
   description: 'Your guide to a better life.',
   verification: {
-    google: 'CbRaIoMi9jpK8ygK0LJtvvI9TJDHSEZq_kzYGAAQ2Q0',
+    google: '1QSlAE3jDipmCdo8vIUhI6ZAj3YWi-onN9ypVH8wfiE',
   },
 };
 
