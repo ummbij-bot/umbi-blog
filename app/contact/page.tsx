@@ -12,7 +12,7 @@ export default function ContactPage() {
             Contact Us
           </h1>
           <p className="text-xl text-white opacity-90 max-w-2xl">
-            Have questions or suggestions? We'd love to hear from you.
+            Have questions or suggestions? We&apos;d love to hear from you.
           </p>
         </div>
       </section>
