@@ -1,11 +1,10 @@
 import Hero from '@/components/ui/Hero';
 import CategoryCard from '@/components/ui/CategoryCard';
-import BlogCard from '@/components/blog/BlogCard'; // 우리가 만든 블로그 카드 임포트
-import { posts } from '@/lib/posts'; // 데이터 임포트
+import BlogCard from '@/components/blog/BlogCard';
+import { posts } from '@/lib/posts';
 import { FiDollarSign, FiCpu, FiHeart } from 'react-icons/fi';
 
 export default function Home() {
-  // 최신 글 3개만 가져오기 (날짜순 정렬이 필요하면 sort 추가 가능, 지금은 배열 앞부분 사용)
   const recentPosts = posts.slice(0, 3);
 
   const categories = [
@@ -36,7 +35,7 @@ export default function Home() {
     <>
       <Hero />
       
-      {/* 1. 카테고리 섹션 (배경색: 회색) */}
+      {/* 1. 카테고리 섹션 */}
       <section className="py-20" style={{ backgroundColor: 'var(--color-neutral-50)' }}>
         <div className="container-custom">
           <div className="text-center mb-16">
@@ -63,7 +62,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 2. [NEW] 최신 글 섹션 (배경색: 흰색) */}
+      {/* 2. 최신 글 섹션 */}
       <section className="py-20 bg-white">
         <div className="container-custom">
           <div className="flex items-center justify-between mb-12">
@@ -73,22 +72,24 @@ export default function Home() {
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {recentPosts.map((post) => (
+            {/* index를 추가해서 첫 번째(0번) 게시물만 priority를 true로 설정 */}
+            {recentPosts.map((post, index) => (
               <BlogCard
                 key={post.slug}
                 title={post.title}
                 excerpt={post.excerpt}
                 date={post.date}
-                category={post.category} // category prop이 필요합니다!
+                category={post.category}
                 slug={post.slug}
                 image={post.image}
+                priority={index === 0} // 👈 이 부분이 LCP 경고를 해결해줍니다!
               />
             ))}
           </div>
         </div>
       </section>
 
-      {/* 3. 뉴스레터 섹션 (배경색: 다시 회색으로 변경하여 구분감 주기) */}
+      {/* 3. 뉴스레터 섹션 */}
       <section className="py-20" style={{ backgroundColor: 'var(--color-neutral-50)' }}>
         <div className="container-custom">
           <div className="max-w-3xl mx-auto text-center">
