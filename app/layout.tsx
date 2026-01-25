@@ -4,6 +4,7 @@ import { Inter, Playfair_Display } from 'next/font/google';
 import Footer from '@/components/layout/Footer';
 import Navbar from '@/components/layout/Navbar';
 import Script from 'next/script';
+import GoogleAnalytics from '@/components/GoogleAnalytics';  // 👈 추가
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 const playfair = Playfair_Display({
@@ -35,6 +36,7 @@ export default function RootLayout({
         />
       </head>
       <body className={`${inter.variable} ${playfair.variable} font-sans`}>
+        <GoogleAnalytics />  {/* 👈 추가 */}
         <Navbar />
         <main>{children}</main>
         <Footer />
