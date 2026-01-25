@@ -1,8 +1,0 @@
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
-
-export function proxy(request: NextRequest) {
-  if (request.nextUrl.pathname === '/sitemap.xml') {
-    return NextResponse.rewrite(new URL('/api/sitemap', request.url))
-  }
-}
