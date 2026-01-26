@@ -2,7 +2,7 @@ import { getPostsByCategory } from '@/lib/posts';
 import BlogCard from '@/components/blog/BlogCard';
 import Link from 'next/link';
 import { FiHeart, FiActivity, FiArrowRight } from 'react-icons/fi';
-
+export const revalidate = 0;
 export const metadata = {
   title: 'Health & Wellness - Umbi',
   description:

@@ -1,7 +1,7 @@
 import BlogCard from '@/components/blog/BlogCard';
 import { getPostsByCategory } from '@/lib/posts';
 import { FiCpu } from 'react-icons/fi'; // 아이콘 추가 (선택 사항이지만 추천)
-
+export const revalidate = 0;
 export const metadata = {
   title: 'Tech & Productivity - Umbi',
   description: 'Stay ahead with the latest technology trends, tools, and productivity hacks.',
