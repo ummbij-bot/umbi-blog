@@ -2,7 +2,10 @@ import { getPostsByCategory } from '@/lib/posts';
 import BlogCard from '@/components/blog/BlogCard';
 import Link from 'next/link';
 import { FiDollarSign, FiActivity, FiArrowRight } from 'react-icons/fi';
+
+// Next.js App Router 캐싱 설정 (ISR/SSG 옵션에 따라 조정 가능)
 export const revalidate = 0;
+
 export const metadata = {
   title: 'Personal Finance - Umbi',
   description:
@@ -44,21 +47,20 @@ export default function FinancePage() {
       {/* 2. 메인 콘텐츠 섹션 */}
       <section className="py-16">
         <div className="container-custom">
-          {/* ========== [여기서부터] 계산기 배너 섹션 ========== */}
-          <div className="mb-20">
-            {' '}
-            {/* 간격 넉넉하게 줌 */}
-            <h2
-              className="text-2xl font-bold mb-6 flex items-center gap-2"
-              style={{
-                fontFamily: 'var(--font-display)',
-                color: 'var(--color-neutral-900)',
-              }}
-            >
-              <FiActivity className="text-emerald-600" /> Useful Tools
-            </h2>
-            {/* 클릭 문제 해결을 위해 표준 a 태그 사용 */}
-            <a
+          {/* Tools 섹션 헤더 */}
+          <h2
+            className="text-2xl font-bold mb-6 flex items-center gap-2"
+            style={{
+              fontFamily: 'var(--font-display)',
+              color: 'var(--color-neutral-900)',
+            }}
+          >
+            <FiActivity className="text-emerald-600" /> Useful Tools
+          </h2>
+
+          {/* 계산기 배너 (수정됨: Link 태그 추가) */}
+          <div className="mb-6">
+            <Link
               href="/finance/tools/calculator"
               className="block group bg-white p-8 rounded-2xl border border-emerald-100 shadow-sm hover:shadow-lg transition-all"
             >
@@ -75,17 +77,41 @@ export default function FinancePage() {
                     of compound interest with our free tool.
                   </p>
                 </div>
-
-                {/* 버튼 모양 */}
                 <div className="w-full md:w-auto">
                   <div className="btn-primary inline-flex items-center gap-2 bg-emerald-600 group-hover:bg-emerald-700 w-full md:w-auto justify-center px-6 py-3 rounded-xl text-white font-bold">
                     Try Calculator <FiArrowRight />
                   </div>
                 </div>
               </div>
-            </a>
+            </Link>
           </div>
-          {/* ========== [여기까지] 계산기 배너 섹션 ========== */}
+
+          {/* AI Advisor 배너 (수정됨: Link 태그 추가) */}
+          <div className="mb-20">
+            <Link
+              href="/finance/tools/ai-advisor"
+              className="block group bg-white p-8 rounded-2xl border border-purple-100 shadow-sm hover:shadow-lg transition-all"
+            >
+              <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                <div className="flex-1">
+                  <div className="inline-block px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-xs font-bold mb-3">
+                    NEW! AI POWERED
+                  </div>
+                  <h3 className="text-xl font-bold mb-2 group-hover:text-purple-600 transition-colors">
+                    AI Financial Advisor
+                  </h3>
+                  <p className="text-neutral-600">
+                    Get data-driven financial advice from an AI with 10+ years of wealth management experience. Free, instant analysis.
+                  </p>
+                </div>
+                <div className="w-full md:w-auto">
+                  <div className="btn-primary inline-flex items-center gap-2 bg-purple-600 group-hover:bg-purple-700 w-full md:w-auto justify-center px-6 py-3 rounded-xl text-white font-bold">
+                    Get Advice <FiArrowRight />
+                  </div>
+                </div>
+              </div>
+            </Link>
+          </div>
 
           {/* 3. 최신 글 목록 섹션 */}
           <div className="mb-8 flex items-center justify-between">
