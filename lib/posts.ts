@@ -5770,7 +5770,6 @@ Your future, less-stressed self is worth the effort.
     readTime: '17 min read',
   },
 ];
-
 export function getPostBySlug(category: string, slug: string): Post | undefined {
   return posts.find(post => post.category === category && post.slug === slug);
 }
@@ -5778,4 +5777,3 @@ export function getPostBySlug(category: string, slug: string): Post | undefined 
 export function getPostsByCategory(category: string): Post[] {
   return posts.filter(post => post.category === category);
 }
-
