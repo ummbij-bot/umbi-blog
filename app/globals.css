@@ -113,3 +113,20 @@ h1, h2, h3, h4, h5, h6 {
 .animate-slide-up {
   animation: slide-up 0.3s ease-out;
 }
+/* Giscus 커스터마이징 */
+.giscus {
+  width: 100%;
+}
+
+.giscus-frame {
+  border-radius: 1rem !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+/* 로딩 상태 */
+.giscus-frame[loading] {
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

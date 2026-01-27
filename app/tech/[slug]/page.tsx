@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { getPostBySlug, posts } from '@/lib/posts';
 import Link from 'next/link';
 import Image from 'next/image'; // 👈 이미지 컴포넌트 추가
+import Comments from '@/components/Comments';
 import { FiArrowLeft, FiClock, FiUser, FiCalendar } from 'react-icons/fi';
 
 export async function generateStaticParams() {
@@ -112,6 +113,8 @@ export default async function TechPost({ params }: { params: Promise<{ slug: str
             <Link href="/tech" className="btn-primary inline-flex items-center gap-2">
               <FiArrowLeft /> Back to Tech List
             </Link>
+            {/* 댓글 섹션 */}
+<Comments slug={post.slug} />
           </div>
         </div>
       </div>

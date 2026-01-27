@@ -3,7 +3,7 @@ import { getPostBySlug, posts } from '@/lib/posts';
 import Link from 'next/link';
 import Image from 'next/image'; // 이미지 컴포넌트 추가
 import { FiArrowLeft, FiClock, FiUser, FiCalendar } from 'react-icons/fi';
-
+import Comments from '@/components/Comments';
 export async function generateStaticParams() {
   return posts
     .filter(post => post.category === 'finance')
@@ -112,6 +112,7 @@ export default async function FinancePost({ params }: { params: Promise<{ slug: 
             <Link href="/finance" className="btn-primary inline-flex items-center gap-2">
               <FiArrowLeft /> Back to List
             </Link>
+            <Comments slug={post.slug} />
           </div>
         </div>
       </div>

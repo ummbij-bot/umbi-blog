@@ -2,7 +2,9 @@ import { notFound } from 'next/navigation';
 import { getPostBySlug, posts } from '@/lib/posts';
 import Link from 'next/link';
 import Image from 'next/image';
-import { FiArrowLeft, FiClock, FiUser, FiCalendar } from 'react-icons/fi';
+import { FiArrowLeft, FiClock, FiUser, FiCalendar } 
+from 'react-icons/fi';
+import Comments from '@/components/Comments';
 
 export async function generateStaticParams() {
   return posts
@@ -109,6 +111,9 @@ export default async function WellnessPost({ params }: { params: Promise<{ slug:
             <Link href="/wellness" className="btn-primary inline-flex items-center gap-2 bg-red-600 hover:bg-red-700">
               <FiArrowLeft /> Back to Wellness List
             </Link>
+            {/* 댓글 섹션 */}
+<Comments slug={post.slug} />
+            
           </div>
         </div>
       </div>
