@@ -1,7 +1,9 @@
 import BlogCard from '@/components/blog/BlogCard';
 import { getPostsByCategory } from '@/lib/posts';
-import { FiCpu } from 'react-icons/fi'; // 아이콘 추가 (선택 사항이지만 추천)
+import { FiCpu, FiActivity, FiArrowRight } from 'react-icons/fi';
+import Link from 'next/link';
 export const revalidate = 0;
+
 export const metadata = {
   title: 'Tech & Productivity - Umbi',
   description: 'Stay ahead with the latest technology trends, tools, and productivity hacks.',
@@ -14,10 +16,9 @@ export default function TechPage() {
     <div style={{ backgroundColor: 'var(--color-neutral-50)', minHeight: '100vh' }}>
       <section className="py-16" style={{ background: 'linear-gradient(135deg, #3b82f6, #2563eb)' }}>
         <div className="container-custom">
-          {/* 아이콘과 텍스트 정렬 추가 */}
           <div className="flex items-center gap-3 mb-4 text-blue-200">
-             <FiCpu size={32} />
-             <span className="font-bold text-lg tracking-wider uppercase">Category</span>
+            <FiCpu size={32} />
+            <span className="font-bold text-lg tracking-wider uppercase">Category</span>
           </div>
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4" style={{ fontFamily: 'var(--font-display)' }}>
             Tech & Productivity
@@ -30,6 +31,56 @@ export default function TechPage() {
 
       <section className="py-16">
         <div className="container-custom">
+          {/* Tools 섹션 헤더 */}
+          <h2
+            className="text-2xl font-bold mb-6 flex items-center gap-2"
+            style={{
+              fontFamily: 'var(--font-display)',
+              color: 'var(--color-neutral-900)',
+            }}
+          >
+            <FiActivity className="text-blue-600" /> Useful Tools
+          </h2>
+
+          {/* AI Tech Advisor 배너 */}
+          <div className="mb-20">
+            
+             
+            <Link href="/tech/tools/ai-advisor" className="block group bg-white p-8 rounded-2xl border border-blue-100 shadow-sm hover:shadow-lg transition-all">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                <div className="flex-1">
+                  <div className="inline-block px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-bold mb-3">
+                    NEW! AI POWERED
+                  </div>
+                  <h3 className="text-xl font-bold mb-2 group-hover:text-blue-600 transition-colors">
+                    AI Tech Advisor
+                  </h3>
+                  <p className="text-neutral-600">
+                    Get expert advice on productivity tools, automation, cybersecurity, and tech solutions. Free, instant guidance.
+                  </p>
+                </div>
+                <div className="w-full md:w-auto">
+                  <div className="btn-primary inline-flex items-center gap-2 bg-blue-600 group-hover:bg-blue-700 w-full md:w-auto justify-center px-6 py-3 rounded-xl text-white font-bold">
+                    Get Tech Advice <FiArrowRight />
+                  </div>
+                </div>
+              </div>
+            </Link>
+          </div>
+
+          {/* Latest Articles */}
+          <div className="mb-8">
+            <h2
+              className="text-2xl font-bold"
+              style={{
+                fontFamily: 'var(--font-display)',
+                color: 'var(--color-neutral-900)',
+              }}
+            >
+              Latest Articles
+            </h2>
+          </div>
+
           {posts.length > 0 ? (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {posts.map((post) => (
@@ -45,9 +96,9 @@ export default function TechPage() {
               ))}
             </div>
           ) : (
-             <div className="py-20 text-center rounded-2xl bg-white border border-dashed border-slate-300">
-                <p className="text-lg text-slate-500">No articles found in this category yet.</p>
-             </div>
+            <div className="py-20 text-center rounded-2xl bg-white border border-dashed border-slate-300">
+              <p className="text-lg text-slate-500">No articles found in this category yet.</p>
+            </div>
           )}
         </div>
       </section>

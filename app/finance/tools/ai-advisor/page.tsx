@@ -1,12 +1,21 @@
 'use client';
 
 import { useState } from 'react';
-import { FiSend, FiRefreshCw, FiTrendingUp } from 'react-icons/fi';
+import { FiSend, FiRefreshCw, FiTrendingUp, FiMessageCircle, FiCopy, FiDownload } from 'react-icons/fi';
 import Link from 'next/link';
+import ReactMarkdown from 'react-markdown';
+import { posts } from '@/lib/posts';
+
+interface Message {
+  role: 'user' | 'assistant';
+  content: string;
+  timestamp: Date;
+  relatedPosts?: string[];  
+}
 
 export default function AIAdvisorPage() {
   const [input, setInput] = useState('');
-  const [response, setResponse] = useState('');
+  const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
 
   const exampleQuestions = [
@@ -21,25 +30,43 @@ export default function AIAdvisorPage() {
     
     if (!input.trim()) return;
     
+    const userMessage: Message = {
+      role: 'user',
+      content: input,
+      timestamp: new Date(),
+    };
+    
+    setMessages(prev => [...prev, userMessage]);
     setLoading(true);
-    setResponse('');
+    setInput('');
     
     try {
       const res = await fetch('/api/gemini', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: input }),
+        body: JSON.stringify({ 
+          question: input,
+          history: messages,
+        }),
       });
       
       const data = await res.json();
       
-      if (data.error) {
-        setResponse('Sorry, there was an error generating a response. Please try again.');
-      } else {
-        setResponse(data.answer);
-      }
+      const assistantMessage: Message = {
+        role: 'assistant',
+        content: data.error || data.answer,
+        timestamp: new Date(),
+         relatedPosts: data.relatedPosts || [],
+      };
+      
+      setMessages(prev => [...prev, assistantMessage]);
     } catch {
-      setResponse('Network error occurred. Please try again.');
+      const errorMessage: Message = {
+        role: 'assistant',
+        content: 'Network error occurred. Please try again.',
+        timestamp: new Date(),
+      };
+      setMessages(prev => [...prev, errorMessage]);
     } finally {
       setLoading(false);
     }
@@ -50,8 +77,29 @@ export default function AIAdvisorPage() {
   };
 
   const handleReset = () => {
+    setMessages([]);
     setInput('');
-    setResponse('');
+  };
+
+  const handleCopyToClipboard = (content: string) => {
+    navigator.clipboard.writeText(content);
+    alert('Copied to clipboard!');
+  };
+
+  const handleDownload = () => {
+    const allMessages = messages
+      .map(m => `${m.role === 'user' ? 'You' : 'AI Financial Advisor'} (${m.timestamp.toLocaleTimeString()}):\n${m.content}\n`)
+      .join('\n---\n\n');
+    
+    const blob = new Blob([allMessages], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `financial-advice-${new Date().getTime()}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   };
 
   return (
@@ -83,19 +131,100 @@ export default function AIAdvisorPage() {
       {/* Main Content */}
       <section className="py-16">
         <div className="container-custom max-w-4xl">
+          
+          {/* Conversation History */}
+          {messages.length > 0 && (
+            <div className="mb-8 space-y-4">
+              {messages.map((message, index) => (
+                <div
+                  key={index}
+                  className={`p-6 rounded-2xl ${
+                    message.role === 'user'
+                      ? 'bg-emerald-50 ml-12'
+                      : 'bg-white shadow-sm mr-12'
+                  }`}
+                >
+                  <div className="flex items-start gap-3 mb-2">
+                    {message.role === 'assistant' && (
+                      <div className="p-2 bg-emerald-100 rounded-full">
+                        <FiTrendingUp className="text-emerald-600" size={20} />
+                      </div>
+                    )}
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="font-bold text-sm">
+                          {message.role === 'user' ? 'You' : 'AI Financial Advisor'}
+                        </span>
+                        <span className="text-xs text-neutral-500">
+                          {message.timestamp.toLocaleTimeString()}
+                        </span>
+                      </div>
+                      {message.role === 'assistant' ? (
+                        <>
+                          <div className="prose prose-sm max-w-none">
+                            <ReactMarkdown>{message.content}</ReactMarkdown>
+                          </div>
+                          {/* Share buttons */}
+                          <div className="flex gap-2 mt-4 pt-4 border-t border-neutral-200">
+                            <button
+                              onClick={() => handleCopyToClipboard(message.content)}
+                              className="flex items-center gap-2 px-3 py-2 text-sm bg-neutral-100 hover:bg-neutral-200 rounded-lg transition-colors"
+                              title="Copy to clipboard"
+                            >
+                              <FiCopy size={16} />
+                              Copy
+                            </button>
+                          </div>
+                        </>
+                      ) : (
+                        <p className="text-neutral-800">{message.content}</p>
+                      )}
+                    </div>
+                    {message.role === 'user' && (
+                      <div className="p-2 bg-emerald-600 rounded-full">
+                        <FiMessageCircle className="text-white" size={20} />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+              
+              {loading && (
+                <div className="p-6 rounded-2xl bg-white shadow-sm mr-12">
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 bg-emerald-100 rounded-full">
+                      <FiTrendingUp className="text-emerald-600 animate-pulse" size={20} />
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-bold text-sm mb-2">AI Financial Advisor</div>
+                      <div className="flex gap-2">
+                        <div className="w-2 h-2 bg-emerald-600 rounded-full animate-bounce"></div>
+                        <div className="w-2 h-2 bg-emerald-600 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                        <div className="w-2 h-2 bg-emerald-600 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Input Section */}
           <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
             <form onSubmit={handleSubmit}>
               <label className="block mb-4">
                 <span className="text-lg font-bold text-neutral-900 mb-2 block">
-                  What&apos;s your financial question?
+                  {messages.length === 0 ? "What's your financial question?" : "Continue the conversation"}
                 </span>
                 <textarea
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  placeholder="Example: I make $150k/year and have $300k in retirement savings. Am I on track for retirement at 65?"
+                  placeholder={messages.length === 0 
+                    ? "Example: I make $150k/year and have $300k in retirement savings. Am I on track for retirement at 65?"
+                    : "Ask a follow-up question..."
+                  }
                   className="w-full p-4 border-2 border-neutral-200 rounded-xl focus:border-emerald-500 focus:outline-none transition-colors"
-                  rows={4}
+                  rows={messages.length === 0 ? 4 : 2}
                   disabled={loading}
                 />
               </label>
@@ -114,26 +243,37 @@ export default function AIAdvisorPage() {
                   ) : (
                     <>
                       <FiSend />
-                      Get Analysis
+                      {messages.length === 0 ? 'Get Analysis' : 'Send'}
                     </>
                   )}
                 </button>
                 
-                {response && (
-                  <button
-                    type="button"
-                    onClick={handleReset}
-                    className="px-6 py-4 border-2 border-neutral-300 rounded-xl hover:bg-neutral-50 transition-colors font-bold"
-                  >
-                    New Question
-                  </button>
+                {messages.length > 0 && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={handleReset}
+                      className="px-6 py-4 border-2 border-neutral-300 rounded-xl hover:bg-neutral-50 transition-colors font-bold"
+                    >
+                      New Chat
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleDownload}
+                      className="flex items-center gap-2 px-6 py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition-colors"
+                      title="Download conversation"
+                    >
+                      <FiDownload size={18} />
+                      Download
+                    </button>
+                  </>
                 )}
               </div>
             </form>
           </div>
 
           {/* Example Questions */}
-          {!response && (
+          {messages.length === 0 && (
             <div className="mb-8">
               <h3 className="text-lg font-bold mb-4">Example Questions:</h3>
               <div className="grid md:grid-cols-2 gap-4">
@@ -150,53 +290,30 @@ export default function AIAdvisorPage() {
             </div>
           )}
 
-          {/* Response Section */}
-          {response && (
-            <div className="bg-white rounded-2xl shadow-lg p-8">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="p-3 bg-emerald-100 rounded-full">
-                  <FiTrendingUp className="text-emerald-600" size={24} />
-                </div>
-                <h3 className="text-2xl font-bold text-emerald-600">
-                  Financial Analysis
-                </h3>
-              </div>
-              <div className="prose max-w-none">
-                <div className="whitespace-pre-wrap text-neutral-800 leading-relaxed">
-                  {response}
-                </div>
-              </div>
-
-              {/* Related Posts */}
-              <div className="mt-8 pt-8 border-t border-neutral-200">
-                <h4 className="font-bold mb-4">Related Articles:</h4>
-                <div className="grid gap-4">
-                  <Link
-                    href="/finance/retirement-planning-30s-guide"
-                    className="p-4 bg-emerald-50 rounded-xl hover:bg-emerald-100 transition-colors"
-                  >
-                    <p className="font-bold text-emerald-900">Retirement Planning in Your 30s</p>
-                    <p className="text-sm text-emerald-700">Comprehensive retirement strategy guide</p>
-                  </Link>
-                  <Link
-                    href="/finance/investing-101-beginners-guide"
-                    className="p-4 bg-emerald-50 rounded-xl hover:bg-emerald-100 transition-colors"
-                  >
-                    <p className="font-bold text-emerald-900">Investing 101: Beginner&apos;s Guide</p>
-                    <p className="text-sm text-emerald-700">Start your investment journey</p>
-                  </Link>
-                  <Link
-                    href="/finance/debt-free-journey-pay-off-50000"
-                    className="p-4 bg-emerald-50 rounded-xl hover:bg-emerald-100 transition-colors"
-                  >
-                    <p className="font-bold text-emerald-900">Debt-Free Journey</p>
-                    <p className="text-sm text-emerald-700">How I paid off $50k in debt</p>
-                  </Link>
-                </div>
-              </div>
-            </div>
-          )}
-
+          {/* Related Posts */}
+         {/* Related Posts - Dynamic based on AI recommendation */}
+{messages.length > 0 && messages[messages.length - 1].relatedPosts && messages[messages.length - 1].relatedPosts!.length > 0 && (
+  <div className="bg-white rounded-2xl shadow-lg p-8">
+    <h4 className="font-bold mb-4">Related Articles:</h4>
+    <div className="grid gap-4">
+      {messages[messages.length - 1].relatedPosts!.map((slug, index) => {
+        const post = posts.find(p => p.slug === slug && p.category === 'finance');
+        if (!post) return null;
+        
+        return (
+          <Link
+            key={index}
+            href={`/finance/${slug}`}
+            className="p-4 bg-emerald-50 rounded-xl hover:bg-emerald-100 transition-colors"
+          >
+            <p className="font-bold text-emerald-900">{post.title}</p>
+            <p className="text-sm text-emerald-700">{post.excerpt}</p>
+          </Link>
+        );
+      })}
+    </div>
+  </div>
+)}
           {/* Disclaimer */}
           <div className="mt-8 p-6 bg-yellow-50 border-2 border-yellow-200 rounded-xl">
             <p className="text-sm text-yellow-900">
