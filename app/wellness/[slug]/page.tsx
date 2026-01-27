@@ -1,11 +1,67 @@
 import { notFound } from 'next/navigation';
-import { getPostBySlug, posts } from '@/lib/posts';
-import Link from 'next/link';
+import { posts } from '@/lib/posts';
 import Image from 'next/image';
-import { FiArrowLeft, FiClock, FiUser, FiCalendar } 
-from 'react-icons/fi';
+import Link from 'next/link';
 import Comments from '@/components/Comments';
+import Script from 'next/script';
+import ReactMarkdown from 'react-markdown';
+import type { Metadata } from 'next';
 
+interface PageProps {
+  params: {
+    slug: string;
+  };
+}
+
+// 동적 메타데이터 생성
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const post = posts.find(
+    (p) => p.slug === params.slug && p.category === 'wellness'
+  );
+
+  if (!post) {
+    return {
+      title: 'Post Not Found',
+    };
+  }
+
+  const url = `https://umbi-blog.vercel.app/wellness/${params.slug}`;
+
+  return {
+    title: post.title,
+    description: post.excerpt,
+    keywords: ['wellness', 'health', 'mental health', ...post.title.split(' ').slice(0, 5)],
+    authors: [{ name: 'Umbi Team' }],
+    openGraph: {
+      type: 'article',
+      url,
+      title: post.title,
+      description: post.excerpt,
+      publishedTime: post.date,
+      authors: ['Umbi Team'],
+      images: [
+        {
+          url: post.image || 'https://umbi-blog.vercel.app/og-image.png',
+          width: 1200,
+          height: 630,
+          alt: post.title,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description: post.excerpt,
+      images: post.image ? [post.image] : ['/og-image.png'],
+      creator: '@umbi',
+    },
+    alternates: {
+      canonical: url,
+    },
+  };
+}
+
+// Static params 생성
 export async function generateStaticParams() {
   return posts
     .filter(post => post.category === 'wellness')
@@ -14,109 +70,226 @@ export async function generateStaticParams() {
     }));
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
-  const resolvedParams = await params;
-  const post = getPostBySlug('wellness', resolvedParams.slug);
-  
-  if (!post) {
-    return { title: 'Post Not Found' };
-  }
-
-  return {
-    title: `${post.title} - Umbi`,
-    description: post.excerpt,
-  };
-}
-
-export default async function WellnessPost({ params }: { params: Promise<{ slug: string }> }) {
-  const resolvedParams = await params;
-  const post = getPostBySlug('wellness', resolvedParams.slug);
+export default function BlogPost({ params }: PageProps) {
+  const post = posts.find(
+    (p) => p.slug === params.slug && p.category === 'wellness'
+  );
 
   if (!post) {
     notFound();
   }
 
+  // Breadcrumb Schema
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: 'https://umbi-blog.vercel.app',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Wellness',
+        item: 'https://umbi-blog.vercel.app/wellness',
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: post.title,
+        item: `https://umbi-blog.vercel.app/wellness/${post.slug}`,
+      },
+    ],
+  };
+
+  // Article Schema
+  const articleSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.title,
+    description: post.excerpt,
+    image: post.image,
+    datePublished: post.date,
+    dateModified: post.date,
+    author: {
+      '@type': 'Person',
+      name: 'Umbi Team',
+      url: 'https://umbi-blog.vercel.app/about',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Umbi',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://umbi-blog.vercel.app/logo.png',
+      },
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `https://umbi-blog.vercel.app/wellness/${post.slug}`,
+    },
+  };
+
   return (
-    <article style={{ backgroundColor: 'var(--color-neutral-50)', minHeight: '100vh' }}>
-      <div className="py-8" style={{ backgroundColor: 'white', borderBottom: '1px solid var(--color-neutral-200)' }}>
-        <div className="container-custom max-w-4xl">
-          <Link 
-            href="/wellness" 
-            className="inline-flex items-center gap-2 mb-8 font-medium transition-colors hover:underline text-rose-600"
-            style={{ color: '#dc2626' }} // Wellness 테마색 (Red)
-          >
-            <FiArrowLeft /> Back to Wellness
-          </Link>
-          
-          <h1 className="text-3xl md:text-5xl font-bold mb-6 leading-tight" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-neutral-900)' }}>
-            {post.title}
-          </h1>
+    <>
+      {/* Structured Data */}
+      <Script
+        id="breadcrumb-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <Script
+        id="article-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
 
-          <div className="flex flex-wrap items-center gap-6 text-sm mb-8" style={{ color: 'var(--color-neutral-600)' }}>
-            <div className="flex items-center gap-2">
-              <FiUser className="text-lg" />
-              <span>{post.author}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <FiCalendar className="text-lg" />
-              <span>{post.date}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <FiClock className="text-lg" />
-              <span>{post.readTime}</span>
-            </div>
-          </div>
-
-          {post.image && (
-            <div className="relative w-full h-[300px] md:h-[400px] rounded-2xl overflow-hidden shadow-lg mb-4">
-              <Image 
-                src={post.image} 
-                alt={post.title} 
-                fill 
-                className="object-cover"
-                priority
-              />
-            </div>
-          )}
-        </div>
-      </div>
-
-      <div className="py-12">
-        <div className="container-custom max-w-4xl">
-          <div className="bg-white rounded-2xl p-8 md:p-12" style={{ boxShadow: 'var(--shadow-soft)' }}>
-            {/* 마크다운 본문 렌더링 */}
-            <div style={{ color: 'var(--color-neutral-700)', lineHeight: '1.8', fontSize: '1.125rem' }} dangerouslySetInnerHTML={{ 
-              __html: post.content.split('\n').map(line => {
-                const trimmedLine = line.trim();
-                if (trimmedLine.startsWith('# ')) {
-                  return `<h1 style="font-family: var(--font-display); color: var(--color-neutral-900); font-size: 2.25rem; font-weight: 800; margin: 2.5rem 0 1.5rem;">${trimmedLine.substring(2)}</h1>`;
-                } else if (trimmedLine.startsWith('## ')) {
-                  return `<h2 style="font-family: var(--font-display); color: var(--color-neutral-900); font-size: 1.75rem; font-weight: 700; margin: 2rem 0 1rem; border-bottom: 1px solid #e5e5e5; padding-bottom: 0.5rem;">${trimmedLine.substring(3)}</h2>`;
-                } else if (trimmedLine.startsWith('### ')) {
-                  return `<h3 style="font-family: var(--font-display); color: var(--color-neutral-800); font-size: 1.35rem; font-weight: 600; margin: 1.5rem 0 0.75rem;">${trimmedLine.substring(4)}</h3>`;
-                } else if (trimmedLine.startsWith('**') && trimmedLine.endsWith('**')) {
-                  return `<p style="font-weight: 700; color: var(--color-neutral-900); margin: 1rem 0;">${trimmedLine.substring(2, trimmedLine.length - 2)}</p>`;
-                } else if (trimmedLine.startsWith('- ')) {
-                  return `<li style="margin: 0.5rem 0 0.5rem 1.5rem; list-style-type: disc;">${trimmedLine.substring(2)}</li>`;
-                } else if (trimmedLine === '') {
-                  return '<div style="height: 1rem;"></div>';
-                } else {
-                  return `<p style="margin-bottom: 1.25rem;">${line}</p>`;
-                }
-              }).join('') 
-            }} />
-          </div>
-
-          <div className="mt-12 text-center">
-            <Link href="/wellness" className="btn-primary inline-flex items-center gap-2 bg-red-600 hover:bg-red-700">
-              <FiArrowLeft /> Back to Wellness List
-            </Link>
-            {/* 댓글 섹션 */}
-<Comments slug={post.slug} />
-            
+      <article className="min-h-screen bg-neutral-50">
+        {/* Breadcrumb */}
+        <div className="bg-white border-b border-neutral-200">
+          <div className="container-custom py-4">
+            <nav className="flex items-center gap-2 text-sm">
+              <Link href="/" className="text-neutral-500 hover:text-neutral-900">
+                Home
+              </Link>
+              <span className="text-neutral-300">/</span>
+              <Link
+                href="/wellness"
+                className="text-neutral-500 hover:text-neutral-900"
+              >
+                Wellness
+              </Link>
+              <span className="text-neutral-300">/</span>
+              <span className="text-neutral-900 font-medium line-clamp-1">
+                {post.title}
+              </span>
+            </nav>
           </div>
         </div>
-      </div>
-    </article>
+
+        {/* Hero Image */}
+        <div className="relative w-full h-[400px] md:h-[500px] bg-neutral-900">
+          <Image
+            src={post.image || '/placeholder.jpg'}
+            alt={post.title}
+            fill
+            priority
+            className="object-cover opacity-90"
+            sizes="100vw"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+        </div>
+
+        {/* Content */}
+        <div className="container-custom py-12">
+          <div className="max-w-3xl mx-auto">
+            {/* Category Badge */}
+            <div className="mb-6">
+              <span className="inline-block px-4 py-2 rounded-full text-sm font-bold bg-purple-100 text-purple-700">
+                Wellness
+              </span>
+            </div>
+
+            {/* Title */}
+            <h1
+              className="text-4xl md:text-5xl font-bold mb-6"
+              style={{ fontFamily: 'var(--font-display)' }}
+            >
+              {post.title}
+            </h1>
+
+            {/* Meta */}
+            <div className="flex items-center gap-4 text-neutral-600 mb-8 pb-8 border-b border-neutral-200">
+              <time dateTime={post.date}>{post.date}</time>
+              <span>•</span>
+              <span>5 min read</span>
+            </div>
+
+            {/* Excerpt */}
+            <div className="text-xl text-neutral-700 leading-relaxed mb-8 bg-neutral-100 p-6 rounded-2xl border-l-4 border-purple-500">
+              {post.excerpt}
+            </div>
+
+            {/* Content - 마크다운 렌더링 */}
+            <div className="prose prose-lg max-w-none">
+              <ReactMarkdown
+                components={{
+                  img: (props: React.ImgHTMLAttributes<HTMLImageElement>) => {
+                    const src = typeof props.src === 'string' ? props.src : '/placeholder.jpg';
+                    const alt = typeof props.alt === 'string' ? props.alt : '';
+                    
+                    return (
+                      <span className="block relative w-full h-[400px] my-8 rounded-xl overflow-hidden shadow-lg">
+                        <Image
+                          src={src}
+                          alt={alt}
+                          fill
+                          className="object-cover"
+                          sizes="(max-width: 768px) 100vw, 800px"
+                        />
+                      </span>
+                    );
+                  },
+                  h2: (props) => <h2 className="text-3xl font-bold mt-8 mb-4" {...props} />,
+                  h3: (props) => <h3 className="text-2xl font-bold mt-6 mb-3" {...props} />,
+                  p: (props) => <p className="mb-4 leading-relaxed text-neutral-700" {...props} />,
+                  ul: (props) => <ul className="list-disc pl-6 mb-4 space-y-2" {...props} />,
+                  ol: (props) => <ol className="list-decimal pl-6 mb-4 space-y-2" {...props} />,
+                  li: (props) => <li className="leading-relaxed" {...props} />,
+                  blockquote: (props) => (
+                    <blockquote className="border-l-4 border-purple-500 pl-4 italic my-4 text-neutral-700 bg-neutral-50 py-2" {...props} />
+                  ),
+                  code: ({ inline, children, ...props }: { inline?: boolean; children?: React.ReactNode }) =>
+                    inline ? (
+                      <code className="bg-neutral-100 px-2 py-1 rounded text-sm font-mono text-purple-700" {...props}>
+                        {children}
+                      </code>
+                    ) : (
+                      <code className="block bg-neutral-900 text-white p-4 rounded-lg my-4 overflow-x-auto font-mono text-sm" {...props}>
+                        {children}
+                      </code>
+                    ),
+                  a: (props) => (
+                    <a className="text-purple-600 hover:text-purple-700 underline font-medium" {...props} />
+                  ),
+                  strong: (props) => <strong className="font-bold text-neutral-900" {...props} />,
+                }}
+              >
+                {post.content}
+              </ReactMarkdown>
+            </div>
+
+            {/* Share Buttons */}
+            <div className="mt-12 pt-8 border-t border-neutral-200">
+              <div className="flex items-center gap-4">
+                <span className="font-bold text-neutral-900">Share:</span>
+                
+                  <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(`https://umbi-blog.vercel.app/wellness/${post.slug}`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                >
+                  Twitter
+                </a>
+                
+                 <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`https://umbi-blog.vercel.app/wellness/${post.slug}`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  Facebook
+                </a>
+              </div>
+            </div>
+
+            {/* Comments */}
+            <Comments slug={post.slug} />
+          </div>
+        </div>
+      </article>
+    </>
   );
 }
