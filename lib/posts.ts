@@ -5769,6 +5769,7 @@ Your future, less-stressed self is worth the effort.
     author: 'Dr. Emma Roberts',
     readTime: '17 min read',
   },
+  
 ];
 export function getPostBySlug(category: string, slug: string): Post | undefined {
   return posts.find(post => post.category === category && post.slug === slug);
