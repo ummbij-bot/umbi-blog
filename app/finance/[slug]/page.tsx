@@ -7,23 +7,25 @@ import Script from 'next/script';
 import ReactMarkdown from 'react-markdown';
 import type { Metadata } from 'next';
 
+// Next.js 15 타입 수정
 interface PageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  // ✅ [수정 핵심] category를 'finance'로 고정
+  const { slug } = await params;
+  
   const post = posts.find(
-    (p) => p.slug === params.slug && p.category === 'finance'
+    (p) => p.slug === slug && p.category === 'finance'
   );
 
   if (!post) {
     return { title: 'Post Not Found' };
   }
 
-  const url = `https://umbi-blog.vercel.app/finance/${params.slug}`;
+  const url = `https://umbi-blog.vercel.app/finance/${slug}`;
 
   return {
     title: post.title,
@@ -49,10 +51,11 @@ export async function generateStaticParams() {
     }));
 }
 
-export default function BlogPost({ params }: PageProps) {
-  // ✅ [수정 핵심] category를 'finance'로 고정
+export default async function BlogPost({ params }: PageProps) {
+  const { slug } = await params;
+  
   const post = posts.find(
-    (p) => p.slug === params.slug && p.category === 'finance'
+    (p) => p.slug === slug && p.category === 'finance'
   );
 
   if (!post) {
@@ -118,7 +121,13 @@ export default function BlogPost({ params }: PageProps) {
                 components={{
                   img: (props) => (
                     <span className="block relative w-full h-[400px] my-8 rounded-xl overflow-hidden shadow-lg">
-                      <Image src={props.src as string} alt={props.alt as string} fill className="object-cover" />
+                      {/* ✅ 수정됨: src를 string으로 강제 변환 */}
+                      <Image 
+                        src={(props.src as string) || '/placeholder.jpg'} 
+                        alt={props.alt || 'Blog Image'} 
+                        fill 
+                        className="object-cover" 
+                      />
                     </span>
                   ),
                   h2: (props) => <h2 className="text-3xl font-bold mt-8 mb-4" {...props} />,

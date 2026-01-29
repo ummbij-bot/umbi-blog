@@ -7,23 +7,25 @@ import Script from 'next/script';
 import ReactMarkdown from 'react-markdown';
 import type { Metadata } from 'next';
 
+// Next.js 15 타입 수정
 interface PageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
-// 1. 메타데이터 생성 (Tech 전용)
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  
   const post = posts.find(
-    (p) => p.slug === params.slug && p.category === 'tech'
+    (p) => p.slug === slug && p.category === 'tech'
   );
 
   if (!post) {
     return { title: 'Post Not Found' };
   }
 
-  const url = `https://umbi-blog.vercel.app/tech/${params.slug}`;
+  const url = `https://umbi-blog.vercel.app/tech/${slug}`;
 
   return {
     title: post.title,
@@ -41,7 +43,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-// 2. 정적 경로 생성
 export async function generateStaticParams() {
   return posts
     .filter((post) => post.category === 'tech')
@@ -50,10 +51,11 @@ export async function generateStaticParams() {
     }));
 }
 
-// 3. 페이지 컴포넌트
-export default function BlogPost({ params }: PageProps) {
+export default async function BlogPost({ params }: PageProps) {
+  const { slug } = await params;
+  
   const post = posts.find(
-    (p) => p.slug === params.slug && p.category === 'tech'
+    (p) => p.slug === slug && p.category === 'tech'
   );
 
   if (!post) {
@@ -75,7 +77,6 @@ export default function BlogPost({ params }: PageProps) {
       <Script id="breadcrumb-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
 
       <article className="min-h-screen bg-neutral-50">
-        {/* 네비게이션 */}
         <div className="bg-white border-b border-neutral-200">
           <div className="container-custom py-4">
             <nav className="flex items-center gap-2 text-sm">
@@ -88,7 +89,6 @@ export default function BlogPost({ params }: PageProps) {
           </div>
         </div>
 
-        {/* 히어로 이미지 */}
         <div className="relative w-full h-[400px] md:h-[500px] bg-neutral-900">
           <Image
             src={post.image || '/placeholder.jpg'}
@@ -100,7 +100,6 @@ export default function BlogPost({ params }: PageProps) {
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
         </div>
 
-        {/* 본문 내용 */}
         <div className="container-custom py-12">
           <div className="max-w-3xl mx-auto">
             <div className="mb-6">
@@ -122,7 +121,13 @@ export default function BlogPost({ params }: PageProps) {
                 components={{
                   img: (props) => (
                     <span className="block relative w-full h-[400px] my-8 rounded-xl overflow-hidden shadow-lg">
-                      <Image src={props.src as string} alt={props.alt as string} fill className="object-cover" />
+                      {/* ✅ 수정됨: src를 string으로 강제 변환 */}
+                      <Image 
+                        src={(props.src as string) || '/placeholder.jpg'} 
+                        alt={props.alt || 'Blog Image'} 
+                        fill 
+                        className="object-cover" 
+                      />
                     </span>
                   ),
                   h2: (props) => <h2 className="text-3xl font-bold mt-8 mb-4" {...props} />,

@@ -15,8 +15,10 @@ export const posts: Post[] = [
   {
     slug: '10-ways-save-money',
     title: '10 Simple Ways to Save Money Every Month',
-    excerpt: 'Discover practical strategies to cut expenses and boost your savings without sacrificing your lifestyle.',
-    image: 'https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?q=80&w=1000&auto=format&fit=crop', // 돈/저축 (안정적)
+    excerpt:
+      'Discover practical strategies to cut expenses and boost your savings without sacrificing your lifestyle.',
+    image:
+      'https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?q=80&w=1000&auto=format&fit=crop', // 돈/저축 (안정적)
     content: `
 # 10 Simple Ways to Save Money Every Month
 
@@ -38,9 +40,11 @@ Implementing even half of these strategies can lead to significant monthly savin
   },
   {
     slug: 'investing-101-beginners-guide',
-    title: 'Investing 101: A Beginner\'s Guide to the Stock Market',
-    excerpt: 'Learn the fundamentals of stock market investing and how to build a diversified portfolio.',
-    image: 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?q=80&w=1000&auto=format&fit=crop', // 주식 차트 (교체됨)
+    title: "Investing 101: A Beginner's Guide to the Stock Market",
+    excerpt:
+      'Learn the fundamentals of stock market investing and how to build a diversified portfolio.',
+    image:
+      'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?q=80&w=1000&auto=format&fit=crop', // 주식 차트 (교체됨)
     content: `
 # Investing 101: A Beginner's Guide to the Stock Market
 
@@ -60,8 +64,10 @@ Stock market investing isn't about getting rich quickly—it's about building we
   {
     slug: 'create-budget-that-works',
     title: 'How to Create a Budget That Actually Works',
-    excerpt: 'Master the art of budgeting with these proven techniques that help you take control of your finances.',
-    image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=1000&auto=format&fit=crop', // 계산기 (안정적)
+    excerpt:
+      'Master the art of budgeting with these proven techniques that help you take control of your finances.',
+    image:
+      'https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=1000&auto=format&fit=crop', // 계산기 (안정적)
     content: `
 # How to Create a Budget That Actually Works
 
@@ -81,9 +87,11 @@ A successful budget isn't about perfection—it's about progress.
   {
     slug: 'emergency-fund-complete-guide',
     title: 'Building Your Emergency Fund: A Complete Guide',
-    excerpt: 'Learn how to build a financial safety net that protects you from unexpected expenses and provides peace of mind.',
+    excerpt:
+      'Learn how to build a financial safety net that protects you from unexpected expenses and provides peace of mind.',
     // 👇 [수정됨] 확실하게 작동하는 새 이미지 (저금통)
-  image: 'https://images.unsplash.com/photo-1579621970795-87facc2f976d?q=80&w=1000&auto=format&fit=crop',
+    image:
+      'https://images.unsplash.com/photo-1579621970795-87facc2f976d?q=80&w=1000&auto=format&fit=crop',
     content: `
 # Building Your Emergency Fund: A Complete Guide
 
@@ -105,8 +113,10 @@ Building an emergency fund requires patience, but it provides priceless peace of
   {
     slug: 'top-10-ai-tools-2026',
     title: 'Top 10 AI Tools to Boost Your Productivity in 2026',
-    excerpt: 'Explore the most powerful AI tools that can revolutionize your workflow and save hours every week.',
-    image: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=1000&auto=format&fit=crop', // AI 뇌 (안정적)
+    excerpt:
+      'Explore the most powerful AI tools that can revolutionize your workflow and save hours every week.',
+    image:
+      'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=1000&auto=format&fit=crop', // AI 뇌 (안정적)
     content: `
 # Top 10 AI Tools to Boost Your Productivity in 2026
 
@@ -126,8 +136,10 @@ The future of productivity is here, and it's powered by AI.
   {
     slug: 'ultimate-remote-work-setup',
     title: 'The Ultimate Remote Work Setup Guide',
-    excerpt: 'Create the perfect home office with our comprehensive guide to hardware, software, and ergonomics.',
-    image: 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?q=80&w=1000&auto=format&fit=crop', // 오피스 (안정적)
+    excerpt:
+      'Create the perfect home office with our comprehensive guide to hardware, software, and ergonomics.',
+    image:
+      'https://images.unsplash.com/photo-1497215728101-856f4ea42174?q=80&w=1000&auto=format&fit=crop', // 오피스 (안정적)
     content: `
 # The Ultimate Remote Work Setup Guide
 
@@ -147,8 +159,10 @@ Invest in your setup, invest in yourself.
   {
     slug: 'master-productivity-apps',
     title: 'Master These 5 Productivity Apps for Maximum Efficiency',
-    excerpt: 'Discover the essential apps that top performers use to stay organized and accomplish more.',
-    image: 'https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?q=80&w=1000&auto=format&fit=crop', // 앱/계획 (안정적)
+    excerpt:
+      'Discover the essential apps that top performers use to stay organized and accomplish more.',
+    image:
+      'https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?q=80&w=1000&auto=format&fit=crop', // 앱/계획 (안정적)
     content: `
 # Master These 5 Productivity Apps for Maximum Efficiency
 
@@ -170,8 +184,10 @@ Tools amplify good systems but can't fix bad habits.
   {
     slug: '7-day-meal-prep-guide',
     title: '7-Day Meal Prep Guide for Busy Professionals',
-    excerpt: 'Simplify your week with healthy, delicious meals that you can prepare in advance.',
-    image: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=1000&auto=format&fit=crop', // 건강식 (안정적)
+    excerpt:
+      'Simplify your week with healthy, delicious meals that you can prepare in advance.',
+    image:
+      'https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=1000&auto=format&fit=crop', // 건강식 (안정적)
     content: `
 # 7-Day Meal Prep Guide for Busy Professionals
 
@@ -191,8 +207,10 @@ Meal prep is about taking control of your nutrition.
   {
     slug: '15-minute-morning-workout',
     title: '15-Minute Morning Workout Routine for Beginners',
-    excerpt: 'Start your day right with this simple yet effective workout routine that requires no equipment.',
-    image: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=1000&auto=format&fit=crop', // 운동 (안정적)
+    excerpt:
+      'Start your day right with this simple yet effective workout routine that requires no equipment.',
+    image:
+      'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=1000&auto=format&fit=crop', // 운동 (안정적)
     content: `
 # 15-Minute Morning Workout Routine for Beginners
 
@@ -212,9 +230,11 @@ Consistency is key.
   {
     slug: 'science-of-better-sleep',
     title: 'The Science of Better Sleep: 10 Evidence-Based Tips',
-    excerpt: 'Improve your sleep quality with scientifically proven strategies for deeper, more restorative rest.',
+    excerpt:
+      'Improve your sleep quality with scientifically proven strategies for deeper, more restorative rest.',
     // 👇 [수정됨] 확실하게 작동하는 새 이미지 (침실)
-    image: 'https://images.unsplash.com/photo-1520206183501-b80df61043c2?q=80&w=1000&auto=format&fit=crop', 
+    image:
+      'https://images.unsplash.com/photo-1520206183501-b80df61043c2?q=80&w=1000&auto=format&fit=crop',
     content: `
 # The Science of Better Sleep: 10 Evidence-Based Tips
 
@@ -232,10 +252,12 @@ Sleep well, live better.
     readTime: '18 min read',
   },
   {
-   slug: 'credit-card-rewards-guide',
+    slug: 'credit-card-rewards-guide',
     title: 'Credit Card Rewards: Complete Guide to Maximizing Points',
-    excerpt: 'Learn how to maximize credit card rewards, earn points strategically, and redeem them for maximum value.',
-    image: 'https://images.unsplash.com/photo-1563013544-824ae1b704d3?q=80&w=1000&auto=format&fit=crop', // 💳 신용카드
+    excerpt:
+      'Learn how to maximize credit card rewards, earn points strategically, and redeem them for maximum value.',
+    image:
+      'https://images.unsplash.com/photo-1563013544-824ae1b704d3?q=80&w=1000&auto=format&fit=crop', // 💳 신용카드
     content: `
 # Credit Card Rewards: Complete Guide to Maximizing Points
 
@@ -779,8 +801,10 @@ Your first step: Choose one starter card and commit to paying in full monthly. E
   {
     slug: 'side-hustles-extra-money-2026',
     title: '15 Side Hustles to Make Extra Money in 2026',
-    excerpt: 'Discover proven side hustles that can generate $500-$5,000+ per month while keeping your day job.',
-    image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1000&auto=format&fit=crop', // 💼 사이드 허슬/비즈니스
+    excerpt:
+      'Discover proven side hustles that can generate $500-$5,000+ per month while keeping your day job.',
+    image:
+      'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1000&auto=format&fit=crop', // 💼 사이드 허슬/비즈니스
     content: `
 # 15 Side Hustles to Make Extra Money in 2026
 
@@ -1658,10 +1682,12 @@ Which side hustle will you start this week?
     readTime: '22 min read',
   },
   {
-      slug: 'retirement-planning-30s-guide',
+    slug: 'retirement-planning-30s-guide',
     title: 'Retirement Planning in Your 30s: A Step-by-Step Guide',
-    excerpt: 'Your 30s are the perfect time to supercharge retirement savings. Learn how to build wealth and retire comfortably.',
-    image: 'https://images.unsplash.com/photo-1559526324-593bc073d938?q=80&w=1000&auto=format&fit=crop', // 🏖️ 은퇴/해변
+    excerpt:
+      'Your 30s are the perfect time to supercharge retirement savings. Learn how to build wealth and retire comfortably.',
+    image:
+      'https://images.unsplash.com/photo-1559526324-593bc073d938?q=80&w=1000&auto=format&fit=crop', // 🏖️ 은퇴/해변
     content: `
 # Retirement Planning in Your 30s: A Step-by-Step Guide
 
@@ -2411,8 +2437,10 @@ What's your first step this week?
   {
     slug: 'tax-deductions-everyone-should-know',
     title: 'Tax Deductions Everyone Should Know About in 2026',
-    excerpt: 'Stop overpaying taxes. Discover legitimate deductions most people miss and keep more money in your pocket.',
-    image: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=1000&auto=format&fit=crop', // 📊 세금/계산기
+    excerpt:
+      'Stop overpaying taxes. Discover legitimate deductions most people miss and keep more money in your pocket.',
+    image:
+      'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=1000&auto=format&fit=crop', // 📊 세금/계산기
     content: `
 # Tax Deductions Everyone Should Know About in 2026
 
@@ -2624,10 +2652,12 @@ Your future self will thank you for the extra money in your pocket instead of th
     readTime: '16 min read',
   },
   {
- slug: 'cybersecurity-basics-protect-yourself-online',
+    slug: 'cybersecurity-basics-protect-yourself-online',
     title: 'Cybersecurity Basics: How to Actually Protect Yourself Online',
-    excerpt: 'Stop being an easy target for hackers. Learn the simple cybersecurity habits that protect 95% of threats.',
-    image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1000&auto=format&fit=crop', // 🔒 보안/자물쇠
+    excerpt:
+      'Stop being an easy target for hackers. Learn the simple cybersecurity habits that protect 95% of threats.',
+    image:
+      'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1000&auto=format&fit=crop', // 🔒 보안/자물쇠
     content: `
 # Cybersecurity Basics: How to Actually Protect Yourself Online
 
@@ -2954,10 +2984,12 @@ Now go set up that password manager. Seriously. Do it right now. I'll wait.
     readTime: '17 min read',
   },
   {
-slug: 'meditation-guide-start-5-minutes',
-    title: 'Beginner\'s Guide to Meditation: Start in Just 5 Minutes',
-    excerpt: 'Meditation isn\'t about emptying your mind. Learn what it actually is and how to start today, even if you think you can\'t sit still.',
-    image: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=1000&auto=format&fit=crop', // 🧘 명상
+    slug: 'meditation-guide-start-5-minutes',
+    title: "Beginner's Guide to Meditation: Start in Just 5 Minutes",
+    excerpt:
+      "Meditation isn't about emptying your mind. Learn what it actually is and how to start today, even if you think you can't sit still.",
+    image:
+      'https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=1000&auto=format&fit=crop', // 🧘 명상
     content: `
 # Beginner's Guide to Meditation: Start in Just 5 Minutes
 
@@ -3247,10 +3279,12 @@ Now close this article and go meditate.
     readTime: '16 min read',
   },
   {
-   slug: 'financial-planning-life-events',
+    slug: 'financial-planning-life-events',
     title: 'Financial Planning for Major Life Events: A Complete Guide',
-    excerpt: 'Marriage, babies, home buying, career changes—learn how to financially prepare for life\'s biggest moments.',
-    image: 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?q=80&w=1000&auto=format&fit=crop', // 👨‍👩‍👧‍👦 가족/라이프
+    excerpt:
+      "Marriage, babies, home buying, career changes—learn how to financially prepare for life's biggest moments.",
+    image:
+      'https://images.unsplash.com/photo-1511632765486-a01980e01a18?q=80&w=1000&auto=format&fit=crop', // 👨‍👩‍👧‍👦 가족/라이프
     content: `
 # Financial Planning for Major Life Events: A Complete Guide
 
@@ -3609,8 +3643,10 @@ Start planning for your next major life event today. Future you will be so grate
   {
     slug: 'debt-free-journey-pay-off-50000',
     title: 'Debt-Free Journey: How to Pay Off $50,000 in 3 Years',
-    excerpt: 'Real strategies from someone who did it. Learn the exact steps to eliminate massive debt faster than you think possible.',
-    image: 'https://images.unsplash.com/photo-1554224311-beee2c231576?q=80&w=1000&auto=format&fit=crop', // 📊 그래프/성장
+    excerpt:
+      'Real strategies from someone who did it. Learn the exact steps to eliminate massive debt faster than you think possible.',
+    image:
+      'https://images.unsplash.com/photo-1554224311-beee2c231576?q=80&w=1000&auto=format&fit=crop', // 📊 그래프/성장
     content: `
 # Debt-Free Journey: How to Pay Off $50,000 in 3 Years
 
@@ -3876,8 +3912,10 @@ Trust me.
   {
     slug: 'smart-shopping-save-money-without-coupons',
     title: '12 Smart Shopping Strategies to Save Money Without Coupons',
-    excerpt: 'Forget extreme couponing. These practical shopping hacks save thousands yearly without clipping a single coupon.',
-    image: 'https://images.unsplash.com/photo-1472851294608-062f824d29cc?q=80&w=1000&auto=format&fit=crop', // 🛒 쇼핑카트
+    excerpt:
+      'Forget extreme couponing. These practical shopping hacks save thousands yearly without clipping a single coupon.',
+    image:
+      'https://images.unsplash.com/photo-1472851294608-062f824d29cc?q=80&w=1000&auto=format&fit=crop', // 🛒 쇼핑카트
     content: `
 # 12 Smart Shopping Strategies to Save Money Without Coupons
 
@@ -4264,8 +4302,10 @@ Your future self—the one with more money and less financial stress—will than
   {
     slug: 'cloud-storage-comparison-2026',
     title: 'Cloud Storage Showdown: Google Drive vs Dropbox vs OneDrive 2026',
-    excerpt: 'Stop paying for the wrong cloud storage. Honest comparison of features, pricing, and which one actually deserves your money.',
-    image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1000&auto=format&fit=crop', // ☁️ 클라우드/기술
+    excerpt:
+      'Stop paying for the wrong cloud storage. Honest comparison of features, pricing, and which one actually deserves your money.',
+    image:
+      'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1000&auto=format&fit=crop', // ☁️ 클라우드/기술
     content: `
 # Cloud Storage Showdown: Google Drive vs Dropbox vs OneDrive 2026
 
@@ -4624,8 +4664,10 @@ Pick one, commit to it, and actually use it. Your files deserve better than bein
   {
     slug: 'building-first-website-beginners-guide',
     title: 'Building Your First Website: Complete Beginner Guide 2026',
-    excerpt: 'No coding experience? No problem. Learn how to build a professional website from scratch in one weekend.',
-    image: 'https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?q=80&w=1000&auto=format&fit=crop',
+    excerpt:
+      'No coding experience? No problem. Learn how to build a professional website from scratch in one weekend.',
+    image:
+      'https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?q=80&w=1000&auto=format&fit=crop',
     content: `
 # Building Your First Website: Complete Beginner Guide 2026
 
@@ -4882,8 +4924,10 @@ Stop reading. Start building. Your website is waiting.
   {
     slug: 'best-free-software-content-creators-2026',
     title: 'Best Free Software for Content Creators in 2026',
-    excerpt: 'Stop paying for expensive creative software. These free tools are powerful enough for professional work.',
-    image: 'https://images.unsplash.com/photo-1551650975-87deedd944c3?q=80&w=1000&auto=format&fit=crop', // 🎨 창작/디자인
+    excerpt:
+      'Stop paying for expensive creative software. These free tools are powerful enough for professional work.',
+    image:
+      'https://images.unsplash.com/photo-1551650975-87deedd944c3?q=80&w=1000&auto=format&fit=crop', // 🎨 창작/디자인
     content: `
 # Best Free Software for Content Creators in 2026
 
@@ -5363,8 +5407,10 @@ Your wallet will definitely thank you.
   {
     slug: 'stress-management-techniques-that-work',
     title: '10 Stress Management Techniques That Actually Work',
-    excerpt: 'Forget bubble baths and deep breaths. These evidence-based strategies reduce stress when you need it most.',
-    image: 'https://images.unsplash.com/photo-1499209974431-9dddcece7f88?q=80&w=1000&auto=format&fit=crop', // 🧘 평온/스트레스 해소
+    excerpt:
+      'Forget bubble baths and deep breaths. These evidence-based strategies reduce stress when you need it most.',
+    image:
+      'https://images.unsplash.com/photo-1499209974431-9dddcece7f88?q=80&w=1000&auto=format&fit=crop', // 🧘 평온/스트레스 해소
     content: `
 # 10 Stress Management Techniques That Actually Work
 
@@ -5769,16 +5815,19 @@ Your future, less-stressed self is worth the effort.
     author: 'Dr. Emma Roberts',
     readTime: '17 min read',
   },
-  
 
- // <-- stress-management 포스트가 끝나는 콤마
+  // <-- stress-management 포스트가 끝나는 콤마
 
   // Auto-generated post 1: Personalized AI
   {
     slug: 'beyond-hype-mastering-personalized-ai-edge-computing-2026-success',
-    title: 'Beyond the Hype: Mastering Personalized AI & Edge Computing for 2026 Success',
-    excerpt: 'The tech landscape of 2026 is dominated by personalized AI and the quiet power of edge computing. This deep dive explores how these intertwined technologies are reshaping industries and daily life.',
-    image: 'https://images.unsplash.com/photo-1611974765270-ca12586343bb?q=80&w=1000&auto=format&fit=crop',
+    title:
+      'Beyond the Hype: Mastering Personalized AI & Edge Computing for 2026 Success',
+    excerpt:
+      'The tech landscape of 2026 is dominated by personalized AI and the quiet power of edge computing. This deep dive explores how these intertwined technologies are reshaping industries and daily life.',
+    // AI 관련 안전한 이미지로 교체했습니다
+    image:
+      'https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=1000&auto=format&fit=crop',
     date: 'January 28, 2026',
     category: 'tech',
     author: 'AI Editor',
@@ -5842,19 +5891,21 @@ As an individual in 2026, you're not just a user of technology; you're an active
 
 ## Conclusion
 The year 2026 stands as a testament to the transformative power of technology, particularly the dynamic duo of personalized AI and edge computing. These aren't just buzzwords; they represent a fundamental paradigm shift toward more intelligent, efficient, and private digital interactions. By understanding their interplay and proactively implementing the strategies outlined, individuals can reclaim their time and enhance their capabilities, while businesses can unlock unprecedented levels of innovation, customer satisfaction, and operational resilience. The future is here, it's personal, and it's powered at the edge. Are you ready to master it?
-    `
+    `,
   },
 
   // Auto-generated post 2: Digital Wellness
   {
     slug: 'digital-wellness-reset-thrive-2026',
     title: "Digital Wellness Reset: Thriving in 2026's Hyper-Connected World",
-    excerpt: "In 2026, our digital lives are more integrated than ever, bringing both incredible convenience and unprecedented challenges to our mental well-being. This post offers actionable strategies to reclaim your focus.",
-    image: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?q=80&w=1000&auto=format&fit=crop",
-    date: "January 29, 2026",
-    category: "wellness",
-    author: "AI Editor",
-    readTime: "8 min read",
+    excerpt:
+      'In 2026, our digital lives are more integrated than ever, bringing both incredible convenience and unprecedented challenges to our mental well-being. This post offers actionable strategies to reclaim your focus.',
+    image:
+      'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?q=80&w=1000&auto=format&fit=crop',
+    date: 'January 29, 2026',
+    category: 'wellness',
+    author: 'AI Editor',
+    readTime: '8 min read',
     content: `
 # Digital Wellness Reset: Thriving in 2026's Hyper-Connected World
 
@@ -5900,14 +5951,17 @@ Use technology to your advantage to reduce its disruptive potential.
 
 ## Conclusion
 In 2026, navigating the digital world while maintaining our mental and emotional equilibrium is one of the most vital wellness challenges we face. By understanding technology's impact, setting clear boundaries, optimizing our digital environments, and intentionally prioritizing real-world connection, we can reclaim our focus. This isn't about rejecting the future; it's about shaping a future where technology serves our well-being.
-    `
-  }
+    `,
+  },
 ];
 
-export function getPostBySlug(category: string, slug: string): Post | undefined {
-  return posts.find(post => post.category === category && post.slug === slug);
+export function getPostBySlug(
+  category: string,
+  slug: string,
+): Post | undefined {
+  return posts.find((post) => post.category === category && post.slug === slug);
 }
 
 export function getPostsByCategory(category: string): Post[] {
-  return posts.filter(post => post.category === category);
+  return posts.filter((post) => post.category === category);
 }
