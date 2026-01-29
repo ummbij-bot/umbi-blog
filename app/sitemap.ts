@@ -1,9 +1,10 @@
 import { MetadataRoute } from 'next'
+import { posts } from '@/lib/posts' // ✅ 저장된 글 데이터를 직접 가져옵니다
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://umbi-blog.vercel.app'
 
-  // 1. 고정 페이지 (메뉴 등)
+  // 1. 고정 페이지 (작성해주신 목록 그대로 유지)
   const routes = [
     '',
     '/finance',
@@ -22,38 +23,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: route === '' ? 1 : 0.9,
   }))
 
-  // 2. 블로그 글 목록 (아까 주신 목록 반영)
-  const posts = [
-    'finance/10-ways-save-money',
-    'finance/investing-101-beginners-guide',
-    'finance/create-budget-that-works',
-    'finance/emergency-fund-complete-guide',
-    'finance/credit-card-rewards-guide',
-    'finance/side-hustles-extra-money-2026',
-    'finance/retirement-planning-30s-guide',
-    'finance/tax-deductions-everyone-should-know',
-    'finance/real-estate-investing-beginners',
-    'finance/financial-planning-life-events',
-    'finance/debt-free-journey-pay-off-50000',
-    'finance/smart-shopping-save-money-without-coupons',
-    'tech/top-10-ai-tools-2026',
-    'tech/ultimate-remote-work-setup',
-    'tech/master-productivity-apps',
-    'tech/cybersecurity-basics-protect-yourself-online',
-    'tech/cloud-storage-comparison-2026',
-    'tech/building-first-website-beginners-guide',
-    'tech/best-free-software-content-creators-2026',
-    'wellness/7-day-meal-prep-guide',
-    'wellness/15-minute-morning-workout',
-    'wellness/science-of-better-sleep',
-    'wellness/meditation-guide-start-5-minutes',
-    'wellness/stress-management-techniques-that-work',
-  ].map((slug) => ({
-    url: `${baseUrl}/${slug}`,
-    lastModified: new Date(),
+  // 2. 블로그 글 목록 (✅ 여기가 핵심! 자동으로 불러오도록 변경)
+  const blogPosts = posts.map((post) => ({
+    // 카테고리와 슬러그를 조합해서 주소를 만듭니다
+    url: `${baseUrl}/${post.category}/${post.slug}`,
+    // 글 작성 날짜를 반영합니다
+    lastModified: new Date(post.date),
     changeFrequency: 'weekly' as const,
     priority: 0.8,
   }))
 
-  return [...routes, ...posts]
+  // 두 목록을 합쳐서 리턴
+  return [...routes, ...blogPosts]
 }
