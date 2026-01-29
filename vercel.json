@@ -2,19 +2,16 @@
   "routes": [
     {
       "src": "/sitemap.xml",
-      "dest": "/public/sitemap.xml",
+      "dest": "/sitemap.xml",
       "headers": {
         "Content-Type": "application/xml"
       }
-    },
-  {
+    }
+  ],
   "crons": [
     {
       "path": "/api/auto-post",
       "schedule": "0 14 * * *"
     }
   ]
-}
-  ]
-  
 }
