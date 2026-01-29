@@ -1,4 +1,3 @@
-// app/api/auto-post/route.ts
 import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { Octokit } from 'octokit';
@@ -16,10 +15,9 @@ export async function GET(request: Request) {
 
     // 2. Gemini 설정
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-    // 모델이 가끔 JSON 실수를 하면 1.5 버전이 더 안정적일 때가 있어 1.5로 변경합니다.
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    // 3. 주제 및 날짜 설정 (미국 시간)
+    // 3. 주제 및 날짜 설정
     const categories = ['finance', 'tech', 'wellness'];
     const randomCategory = categories[Math.floor(Math.random() * categories.length)];
     
@@ -28,9 +26,16 @@ export async function GET(request: Request) {
       year: 'numeric', month: 'long', day: 'numeric'
     });
 
+    // 4. 이미지 자동 생성 (Pollinations AI 활용)
+    // 매번 다른 이미지를 위해 랜덤 시드(seed)를 추가합니다.
+    const randomSeed = Math.floor(Math.random() * 10000);
+    // 주제에 맞는 이미지를 그려달라고 요청하는 URL입니다.
+    const dynamicImageUrl = `https://image.pollinations.ai/prompt/${randomCategory}%20minimalist%20concept%20art?width=1200&height=630&nologo=true&seed=${randomSeed}`;
+
+    // 5. 프롬프트 설정 (이미지는 AI가 처리하므로 텍스트만 요청)
     const prompt = `
       You are a professional blog writer. Write a post for category: "${randomCategory}".
-      Return ONLY a JSON object. Do not include markdown code blocks like \`\`\`json.
+      Return ONLY a JSON object. Do not include markdown code blocks.
       
       Required Fields:
       - slug: kebab-case-string
@@ -41,10 +46,9 @@ export async function GET(request: Request) {
       - category: "${randomCategory}"
       - author: "AI Editor"
       - readTime: "5 min read"
-      - image: "https://images.unsplash.com/photo-1611974765270-ca12586343bb?q=80&w=1000&auto=format&fit=crop"
     `;
 
-    // 4. AI 생성
+    // 6. AI 글쓰기
     const result = await model.generateContent(prompt);
     const responseText = result.response.text().replace(/```json|```/g, '').trim(); 
     
@@ -55,8 +59,7 @@ export async function GET(request: Request) {
         throw new Error('AI returned invalid JSON');
     }
 
-    // ⭐ [핵심] 안전장치 (Fallback) 추가
-    // AI가 빼먹은 항목이 있으면 여기서 강제로 채워넣습니다.
+    // 7. 안전장치 (Fallback) + 자동 생성된 이미지 주입
     const safePost = {
         slug: aiData.slug || `post-${Date.now()}`,
         title: aiData.title || "Untitled Post",
@@ -66,12 +69,13 @@ export async function GET(request: Request) {
         category: aiData.category || randomCategory,
         author: aiData.author || "AI Editor",
         readTime: aiData.readTime || "5 min read",
-        image: aiData.image || "https://images.unsplash.com/photo-1611974765270-ca12586343bb?q=80&w=1000&auto=format&fit=crop"
+        // 👇 여기가 핵심! 아까 만든 AI 이미지 주소를 넣습니다.
+        image: dynamicImageUrl 
     };
 
-    // 5. GitHub 저장
+    // 8. GitHub 저장
     const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
-    const owner = 'ummbij-bot'; // 본인 아이디 확인
+    const owner = 'ummbij-bot'; // 본인 아이디인지 확인하세요!
     const repo = 'umbi-blog';
     const path = 'lib/posts.ts';
 
@@ -87,7 +91,8 @@ export async function GET(request: Request) {
     if (insertionPoint === -1) throw new Error('Insertion point not found');
 
     const newPostString = JSON.stringify(safePost, null, 2);
-    const newContent = content.slice(0, insertionPoint) + 
+    // 콤마(,) 처리를 확실하게 해서 문법 오류 방지
+    const newContent = content.slice(0, insertionPoint).trimEnd().replace(/,$/, '') + 
                        `,\n  ${newPostString}\n` + 
                        content.slice(insertionPoint);
 
@@ -100,7 +105,7 @@ export async function GET(request: Request) {
       sha: fileData.sha,
     });
 
-    return NextResponse.json({ success: true, title: safePost.title });
+    return NextResponse.json({ success: true, title: safePost.title, image: safePost.image });
 
   } catch (error) {
     console.error(error);
