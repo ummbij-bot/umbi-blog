@@ -57,7 +57,7 @@ export default function Home() {
             {filteredPosts.map((post) => (
               <Link 
                 key={post.slug} 
-                href={`/blog/${post.slug}`}
+                href={`/${post.category}/${post.slug}`}
                 className="group bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 flex flex-col"
               >
                 {/* 썸네일 이미지 */}
