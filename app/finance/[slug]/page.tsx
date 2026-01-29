@@ -14,7 +14,7 @@ interface PageProps {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  // ✅ 수정됨: category를 'finance'로 고정
+  // ✅ [수정 핵심] category를 'finance'로 고정
   const post = posts.find(
     (p) => p.slug === params.slug && p.category === 'finance'
   );
@@ -50,7 +50,7 @@ export async function generateStaticParams() {
 }
 
 export default function BlogPost({ params }: PageProps) {
-  // ✅ 수정됨: category를 'finance'로 고정
+  // ✅ [수정 핵심] category를 'finance'로 고정
   const post = posts.find(
     (p) => p.slug === params.slug && p.category === 'finance'
   );

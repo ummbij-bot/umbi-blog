@@ -52,7 +52,7 @@ export default function Home() {
             {filteredPosts.map((post) => (
               <Link 
                 key={post.slug} 
-                // ✅ [수정 완료] /blog/... 대신 /카테고리/... 로 이동하도록 변경됨
+                // ✅ [수정 핵심] /blog/... 대신 /카테고리/... 로 이동하도록 변경
                 href={`/${post.category}/${post.slug}`}
                 className="group bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 flex flex-col"
               >
