@@ -8,10 +8,12 @@ import { posts } from '@/lib/posts';
 export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState('all');
 
+  // 최신순 정렬
   const sortedPosts = [...posts].sort((a, b) => 
     new Date(b.date).getTime() - new Date(a.date).getTime()
   );
 
+  // 카테고리 필터링
   const filteredPosts = selectedCategory === 'all'
     ? sortedPosts
     : sortedPosts.filter((post) => post.category === selectedCategory);
@@ -50,7 +52,7 @@ export default function Home() {
             {filteredPosts.map((post) => (
               <Link 
                 key={post.slug} 
-                // ✅ 여기가 수정되었습니다! (/blog -> /${post.category})
+                // ✅ [수정 완료] /blog/... 대신 /카테고리/... 로 이동하도록 변경됨
                 href={`/${post.category}/${post.slug}`}
                 className="group bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 flex flex-col"
               >

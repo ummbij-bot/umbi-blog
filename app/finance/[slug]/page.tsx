@@ -14,8 +14,16 @@ interface PageProps {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const post = posts.find((p) => p.slug === params.slug && p.category === 'finance');
-  if (!post) return { title: 'Post Not Found' };
+  // ✅ 수정됨: category를 'finance'로 고정
+  const post = posts.find(
+    (p) => p.slug === params.slug && p.category === 'finance'
+  );
+
+  if (!post) {
+    return { title: 'Post Not Found' };
+  }
+
+  const url = `https://umbi-blog.vercel.app/finance/${params.slug}`;
 
   return {
     title: post.title,
@@ -24,7 +32,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     authors: [{ name: 'Umbi Team' }],
     openGraph: {
       type: 'article',
-      url: `https://umbi-blog.vercel.app/finance/${params.slug}`,
+      url,
       title: post.title,
       description: post.excerpt,
       publishedTime: post.date,
@@ -36,14 +44,20 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export async function generateStaticParams() {
   return posts
     .filter((post) => post.category === 'finance')
-    .map((post) => ({ slug: post.slug }));
+    .map((post) => ({
+      slug: post.slug,
+    }));
 }
 
 export default function BlogPost({ params }: PageProps) {
   // ✅ 수정됨: category를 'finance'로 고정
-  const post = posts.find((p) => p.slug === params.slug && p.category === 'finance');
+  const post = posts.find(
+    (p) => p.slug === params.slug && p.category === 'finance'
+  );
 
-  if (!post) notFound();
+  if (!post) {
+    notFound();
+  }
 
   const breadcrumbSchema = {
     '@context': 'https://schema.org',
@@ -58,6 +72,7 @@ export default function BlogPost({ params }: PageProps) {
   return (
     <>
       <Script id="breadcrumb-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+      
       <article className="min-h-screen bg-neutral-50">
         <div className="bg-white border-b border-neutral-200">
           <div className="container-custom py-4">
@@ -70,25 +85,53 @@ export default function BlogPost({ params }: PageProps) {
             </nav>
           </div>
         </div>
+
         <div className="relative w-full h-[400px] md:h-[500px] bg-neutral-900">
-          <Image src={post.image || '/placeholder.jpg'} alt={post.title} fill priority className="object-cover opacity-90" />
+          <Image
+            src={post.image || '/placeholder.jpg'}
+            alt={post.title}
+            fill
+            priority
+            className="object-cover opacity-90"
+          />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
         </div>
+
         <div className="container-custom py-12">
           <div className="max-w-3xl mx-auto">
-            <div className="mb-6"><span className="inline-block px-4 py-2 rounded-full text-sm font-bold bg-emerald-100 text-emerald-700">Finance</span></div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">{post.title}</h1>
-            <div className="flex items-center gap-4 text-neutral-600 mb-8 pb-8 border-b border-neutral-200">
-              <time>{post.date}</time><span>•</span><span>{post.readTime}</span>
+            <div className="mb-6">
+              <span className="inline-block px-4 py-2 rounded-full text-sm font-bold bg-emerald-100 text-emerald-700">
+                Finance
+              </span>
             </div>
+
+            <h1 className="text-4xl md:text-5xl font-bold mb-6">{post.title}</h1>
+
+            <div className="flex items-center gap-4 text-neutral-600 mb-8 pb-8 border-b border-neutral-200">
+              <time>{post.date}</time>
+              <span>•</span>
+              <span>{post.readTime}</span>
+            </div>
+
             <div className="prose prose-lg max-w-none">
-              <ReactMarkdown components={{
-                  img: (props) => <span className="block relative w-full h-[400px] my-8 rounded-xl overflow-hidden shadow-lg"><Image src={props.src as string} alt={props.alt as string} fill className="object-cover" /></span>,
+              <ReactMarkdown 
+                components={{
+                  img: (props) => (
+                    <span className="block relative w-full h-[400px] my-8 rounded-xl overflow-hidden shadow-lg">
+                      <Image src={props.src as string} alt={props.alt as string} fill className="object-cover" />
+                    </span>
+                  ),
                   h2: (props) => <h2 className="text-3xl font-bold mt-8 mb-4" {...props} />,
                   p: (props) => <p className="mb-4 leading-relaxed text-neutral-700" {...props} />,
-                }}>{post.content}</ReactMarkdown>
+                }}
+              >
+                {post.content}
+              </ReactMarkdown>
             </div>
-            <div className="mt-12 pt-8 border-t border-neutral-200"><Comments slug={post.slug} /></div>
+            
+            <div className="mt-12 pt-8 border-t border-neutral-200">
+               <Comments slug={post.slug} />
+            </div>
           </div>
         </div>
       </article>
