@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { Octokit } from 'octokit';
 
-export const maxDuration = 60; 
+export const maxDuration = 60;
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
@@ -15,15 +15,18 @@ export async function GET(request: Request) {
 
     // 2. Gemini 설정
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-001" });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
     // 3. 주제 및 날짜 설정
     const categories = ['finance', 'tech', 'wellness'];
-    const randomCategory = categories[Math.floor(Math.random() * categories.length)];
-    
+    const randomCategory =
+      categories[Math.floor(Math.random() * categories.length)];
+
     const today = new Date().toLocaleDateString('en-US', {
       timeZone: 'America/New_York',
-      year: 'numeric', month: 'long', day: 'numeric'
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
     });
 
     // 4. 이미지 자동 생성 (Pollinations AI 활용)
@@ -50,27 +53,31 @@ export async function GET(request: Request) {
 
     // 6. AI 글쓰기
     const result = await model.generateContent(prompt);
-    const responseText = result.response.text().replace(/```json|```/g, '').trim(); 
-    
+    const responseText = result.response
+      .text()
+      .replace(/```json|```/g, '')
+      .trim();
+
     let aiData;
     try {
-        aiData = JSON.parse(responseText);
+      aiData = JSON.parse(responseText);
     } catch (e) {
-        throw new Error('AI returned invalid JSON');
+      throw new Error('AI returned invalid JSON');
     }
 
     // 7. 안전장치 (Fallback) + 자동 생성된 이미지 주입
     const safePost = {
-        slug: aiData.slug || `post-${Date.now()}`,
-        title: aiData.title || "Untitled Post",
-        excerpt: aiData.excerpt || "No excerpt available.",
-        content: aiData.content || "# No Content\n\nAI failed to generate content.",
-        date: aiData.date || today,
-        category: aiData.category || randomCategory,
-        author: aiData.author || "AI Editor",
-        readTime: aiData.readTime || "5 min read",
-        // 👇 여기가 핵심! 아까 만든 AI 이미지 주소를 넣습니다.
-        image: dynamicImageUrl 
+      slug: aiData.slug || `post-${Date.now()}`,
+      title: aiData.title || 'Untitled Post',
+      excerpt: aiData.excerpt || 'No excerpt available.',
+      content:
+        aiData.content || '# No Content\n\nAI failed to generate content.',
+      date: aiData.date || today,
+      category: aiData.category || randomCategory,
+      author: aiData.author || 'AI Editor',
+      readTime: aiData.readTime || '5 min read',
+      // 👇 여기가 핵심! 아까 만든 AI 이미지 주소를 넣습니다.
+      image: dynamicImageUrl,
     };
 
     // 8. GitHub 저장
@@ -79,22 +86,27 @@ export async function GET(request: Request) {
     const repo = 'umbi-blog';
     const path = 'lib/posts.ts';
 
-    const { data: fileData } = await octokit.rest.repos.getContent({ owner, repo, path });
-    
+    const { data: fileData } = await octokit.rest.repos.getContent({
+      owner,
+      repo,
+      path,
+    });
+
     if (Array.isArray(fileData) || !('content' in fileData)) {
       throw new Error('File content not found');
     }
 
     const content = Buffer.from(fileData.content, 'base64').toString('utf-8');
     const insertionPoint = content.lastIndexOf('];');
-    
+
     if (insertionPoint === -1) throw new Error('Insertion point not found');
 
     const newPostString = JSON.stringify(safePost, null, 2);
     // 콤마(,) 처리를 확실하게 해서 문법 오류 방지
-    const newContent = content.slice(0, insertionPoint).trimEnd().replace(/,$/, '') + 
-                       `,\n  ${newPostString}\n` + 
-                       content.slice(insertionPoint);
+    const newContent =
+      content.slice(0, insertionPoint).trimEnd().replace(/,$/, '') +
+      `,\n  ${newPostString}\n` +
+      content.slice(insertionPoint);
 
     await octokit.rest.repos.createOrUpdateFileContents({
       owner,
@@ -105,11 +117,15 @@ export async function GET(request: Request) {
       sha: fileData.sha,
     });
 
-    return NextResponse.json({ success: true, title: safePost.title, image: safePost.image });
-
+    return NextResponse.json({
+      success: true,
+      title: safePost.title,
+      image: safePost.image,
+    });
   } catch (error) {
     console.error(error);
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorMessage =
+      error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }
