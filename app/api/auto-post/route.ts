@@ -15,7 +15,7 @@ export async function GET(request: Request) {
 
     // 2. Gemini 설정
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-001" });
 
     // 3. 주제 및 날짜 설정
     const categories = ['finance', 'tech', 'wellness'];
