@@ -10,6 +10,17 @@ async function getPosts() {
   if (!supabase) {
     console.warn('Supabase 환경 변수가 없습니다. 빈 배열을 반환합니다.');
     return [];
+    async function getPosts() {
+  if (!supabase) return [];
+  
+  const { data, error } = await supabase.from('posts').select('*');
+  
+  // 배포 후 Vercel Logs에서 이 숫자가 0인지 확인해 보세요!
+  console.log('가져온 포스트 개수:', data?.length); 
+  
+  if (error) console.error('에러 발생:', error.message);
+  return data || [];
+}
   }
 
   try {
