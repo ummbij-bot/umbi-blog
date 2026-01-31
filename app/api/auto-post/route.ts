@@ -1,38 +1,35 @@
 import { NextResponse } from 'next/server';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+// 1. GenerativeModel 타입을 명시적으로 가져옵니다.
+import { GoogleGenerativeAI, GenerativeModel } from '@google/generative-ai';
 import { Octokit } from 'octokit';
 
 export const maxDuration = 60;
 export const dynamic = 'force-dynamic';
 
-// 🔄 재시도 로직 함수 (Linter Free 버전)
+// 🔄 재시도 로직 함수
 async function generateWithRetry(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  model: any, // 라이브러리 호환성을 위해 이곳만 예외 처리
+  model: GenerativeModel, // ✅ any 대신 정확한 타입을 지정했습니다.
   prompt: string,
   retries = 3,
-  initialDelay = 2000
+  initialDelay = 2000,
 ) {
   for (let i = 0; i < retries; i++) {
     try {
       return await model.generateContent(prompt);
-    } catch (error: unknown) { // ✅ 수정됨: any -> unknown
-      // 에러 객체를 안전한 타입으로 변환하여 속성 접근
+    } catch (error: unknown) {
+      // ✅ any 대신 unknown을 사용합니다.
+      // 에러 객체의 타입을 안전하게 확인합니다.
       const err = error as { status?: number; message?: string };
 
-      // 에러 메시지나 상태 코드를 통해 Quota 초과 확인
       const isQuotaError =
         err.status === 429 ||
         err.status === 503 ||
         err.message?.includes('429') ||
-        err.message?.includes('Quota') ||
-        err.message?.includes('Too Many Requests');
+        err.message?.includes('Quota');
 
       if (isQuotaError && i < retries - 1) {
         const delay = initialDelay * Math.pow(2, i);
-        console.warn(
-          `⚠️ API Quota hit. Retrying in ${delay}ms... (Attempt ${i + 1}/${retries})`
-        );
+        console.warn(`⚠️ API Quota hit. Retrying in ${delay}ms...`);
         await new Promise((resolve) => setTimeout(resolve, delay));
         continue;
       }
@@ -43,17 +40,14 @@ async function generateWithRetry(
 
 export async function GET(request: Request) {
   try {
-    // 1. 보안 체크
     const authHeader = request.headers.get('authorization');
     if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // 2. Gemini 설정
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
     const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
-    // 3. 주제 및 날짜 설정
     const categories = ['finance', 'tech', 'wellness'];
     const randomCategory =
       categories[Math.floor(Math.random() * categories.length)];
@@ -65,11 +59,9 @@ export async function GET(request: Request) {
       day: 'numeric',
     });
 
-    // 4. 이미지 자동 생성
     const randomSeed = Math.floor(Math.random() * 10000);
     const dynamicImageUrl = `https://image.pollinations.ai/prompt/${randomCategory}%20minimalist%20concept%20art?width=1200&height=630&nologo=true&seed=${randomSeed}`;
 
-    // 5. 프롬프트 설정
     const prompt = `
       You are a professional blog writer. Write a post for category: "${randomCategory}".
       Return ONLY a JSON object. Do not include markdown code blocks.
@@ -85,7 +77,6 @@ export async function GET(request: Request) {
       - readTime: "5 min read"
     `;
 
-    // 6. AI 글쓰기
     const result = await generateWithRetry(model, prompt);
     const responseText = result?.response
       .text()
@@ -97,10 +88,10 @@ export async function GET(request: Request) {
       if (!responseText) throw new Error('Empty response');
       aiData = JSON.parse(responseText);
     } catch {
+      // ✅ 사용하지 않는 변수 'e'를 제거했습니다.
       throw new Error('AI returned invalid JSON');
     }
 
-    // 7. 안전장치 (Fallback)
     const safePost = {
       slug: aiData.slug || `post-${Date.now()}`,
       title: aiData.title || 'Untitled Post',
@@ -114,7 +105,6 @@ export async function GET(request: Request) {
       image: dynamicImageUrl,
     };
 
-    // 8. GitHub 저장
     const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
     const owner = 'ummbij-bot';
     const repo = 'umbi-blog';
@@ -130,16 +120,18 @@ export async function GET(request: Request) {
       throw new Error('File content not found');
     }
 
-    const content = Buffer.from(fileData.content, 'base64').toString('utf-8');
-    const insertionPoint = content.lastIndexOf('];');
+    const fileContent = Buffer.from(fileData.content, 'base64').toString(
+      'utf-8',
+    );
+    const insertionPoint = fileContent.lastIndexOf('];');
 
     if (insertionPoint === -1) throw new Error('Insertion point not found');
 
     const newPostString = JSON.stringify(safePost, null, 2);
     const newContent =
-      content.slice(0, insertionPoint).trimEnd().replace(/,$/, '') +
+      fileContent.slice(0, insertionPoint).trimEnd().replace(/,$/, '') +
       `,\n  ${newPostString}\n` +
-      content.slice(insertionPoint);
+      fileContent.slice(insertionPoint);
 
     await octokit.rest.repos.createOrUpdateFileContents({
       owner,
@@ -150,14 +142,10 @@ export async function GET(request: Request) {
       sha: fileData.sha,
     });
 
-    return NextResponse.json({
-      success: true,
-      title: safePost.title,
-      image: safePost.image,
-    });
-  } catch (error: unknown) { // ✅ 수정됨: any -> unknown
+    return NextResponse.json({ success: true, title: safePost.title });
+  } catch (error: unknown) {
+    // ✅ 마지막 catch 블록도 unknown으로 수정했습니다.
     console.error(error);
-    // ✅ 수정됨: 에러 메시지 안전 추출
     const errorMessage =
       error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json({ error: errorMessage }, { status: 500 });
