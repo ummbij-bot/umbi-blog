@@ -1,8 +1,13 @@
 // scripts/migrate-posts.ts
-import 'dotenv/config';
-import { createClient } from '@supabase/supabase-js';
-import { posts } from '../lib/posts'; // 직접 임포트!
+import { config } from 'dotenv';
+import path from 'path';
 
+// .env.local 파일을 명시적으로 로드
+config({ path: path.resolve(process.cwd(), '.env.local') });
+
+import { createClient } from '@supabase/supabase-js';
+import { posts } from '../lib/posts';
+// ... 나머지 코드 동일
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 

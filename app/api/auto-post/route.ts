@@ -5,6 +5,24 @@ import { Octokit } from 'octokit';
 export const maxDuration = 60;
 export const dynamic = 'force-dynamic';
 
+// 🔄 재시도 로직 함수 (지수 백오프 적용)
+async function generateWithRetry(model: any, prompt: string, retries = 3, initialDelay = 2000) {
+  for (let i = 0; i < retries; i++) {
+    try {
+      return await model.generateContent(prompt);
+    } catch (error: any) {
+      // 429(Too Many Requests) 또는 503(Service Unavailable) 에러일 때만 재시도
+      if ((error.status === 429 || error.status === 503) && i < retries - 1) {
+        const delay = initialDelay * Math.pow(2, i); // 2초 -> 4초 -> 8초
+        console.warn(`⚠️ API Quota hit. Retrying in ${delay}ms... (Attempt ${i + 1}/${retries})`);
+        await new Promise((resolve) => setTimeout(resolve, delay));
+        continue;
+      }
+      throw error; // 다른 에러거나 재시도 횟수 초과 시 에러 던짐
+    }
+  }
+}
+
 export async function GET(request: Request) {
   try {
     // 1. 보안 체크
@@ -13,7 +31,7 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // 2. Gemini 설정
+    // 2. Gemini 설정 (여전히 2.0 사용, 실패 시 재시도 로직이 방어)
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
     const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
@@ -30,12 +48,10 @@ export async function GET(request: Request) {
     });
 
     // 4. 이미지 자동 생성 (Pollinations AI 활용)
-    // 매번 다른 이미지를 위해 랜덤 시드(seed)를 추가합니다.
     const randomSeed = Math.floor(Math.random() * 10000);
-    // 주제에 맞는 이미지를 그려달라고 요청하는 URL입니다.
     const dynamicImageUrl = `https://image.pollinations.ai/prompt/${randomCategory}%20minimalist%20concept%20art?width=1200&height=630&nologo=true&seed=${randomSeed}`;
 
-    // 5. 프롬프트 설정 (이미지는 AI가 처리하므로 텍스트만 요청)
+    // 5. 프롬프트 설정
     const prompt = `
       You are a professional blog writer. Write a post for category: "${randomCategory}".
       Return ONLY a JSON object. Do not include markdown code blocks.
@@ -51,8 +67,9 @@ export async function GET(request: Request) {
       - readTime: "5 min read"
     `;
 
-    // 6. AI 글쓰기
-    const result = await model.generateContent(prompt);
+    // 6. AI 글쓰기 (✅ 수정된 부분: 재시도 함수 사용)
+    const result = await generateWithRetry(model, prompt);
+    
     const responseText = result.response
       .text()
       .replace(/```json|```/g, '')
@@ -65,7 +82,7 @@ export async function GET(request: Request) {
       throw new Error('AI returned invalid JSON');
     }
 
-    // 7. 안전장치 (Fallback) + 자동 생성된 이미지 주입
+    // 7. 안전장치 (Fallback)
     const safePost = {
       slug: aiData.slug || `post-${Date.now()}`,
       title: aiData.title || 'Untitled Post',
@@ -76,13 +93,12 @@ export async function GET(request: Request) {
       category: aiData.category || randomCategory,
       author: aiData.author || 'AI Editor',
       readTime: aiData.readTime || '5 min read',
-      // 👇 여기가 핵심! 아까 만든 AI 이미지 주소를 넣습니다.
       image: dynamicImageUrl,
     };
 
     // 8. GitHub 저장
     const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
-    const owner = 'ummbij-bot'; // 본인 아이디인지 확인하세요!
+    const owner = 'ummbij-bot';
     const repo = 'umbi-blog';
     const path = 'lib/posts.ts';
 
@@ -102,7 +118,6 @@ export async function GET(request: Request) {
     if (insertionPoint === -1) throw new Error('Insertion point not found');
 
     const newPostString = JSON.stringify(safePost, null, 2);
-    // 콤마(,) 처리를 확실하게 해서 문법 오류 방지
     const newContent =
       content.slice(0, insertionPoint).trimEnd().replace(/,$/, '') +
       `,\n  ${newPostString}\n` +
