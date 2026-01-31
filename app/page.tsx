@@ -1,29 +1,40 @@
-// 1. 필요한 라이브러리와 supabase 클라이언트를 가져옵니다.
-import { supabase } from '@/lib/supabase'; // 본인의 supabase 설정 파일 경로
+import { Suspense } from 'react';
+import HomeClient from '@/components/HomeClient';
+import { supabase } from '@/lib/supabase';
 
-// 2. 반드시 'export default'와 'async'가 붙어 있어야 합니다.
-export default async function Page() {
-  let posts: any[] = [];
-
-  // 3. supabase가 존재할 때만 데이터를 가져오는 안전한 로직
-  if (supabase) {
-    const { data } = await supabase.from('posts').select('*');
-    if (data) posts = data;
+// 서버에서 데이터 가져오기
+async function getPosts() {
+  // 🚨 [중요] 빌드 시점에 supabase가 null일 경우를 대비한 안전장치입니다.
+  if (!supabase) {
+    console.warn('Supabase 환경 변수가 없습니다. 빈 배열을 반환합니다.');
+    return [];
   }
 
-  return (
-    <main>
-      <h1>나의 블로그</h1>
-      {posts.length > 0 ? (
-        posts.map((post) => (
-          <div key={post.id}>
-            <h2>{post.title}</h2>
-            <p>{post.excerpt}</p>
-          </div>
-        ))
-      ) : (
-        <p>현재 게시글이 없거나 연결을 확인 중입니다.</p>
-      )}
-    </main>
-  );
+  try {
+    const { data, error } = await supabase
+      .from('posts')
+      .select('*')
+      .order('date', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching posts:', error);
+      return [];
+    }
+
+    return data || [];
+  } catch (e) {
+    console.error('Supabase 호출 중 오류 발생:', e);
+    return [];
+  }
 }
+
+export default async function Home() {
+  const posts = await getPosts();
+
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-gray-50 flex items-center justify-center">Loading...</div>}>
+      {/* 원래의 UI를 담당하는 HomeClient를 다시 불러옵니다! */}
+      <HomeClient initialPosts={posts} />
+    </Suspense>
+  );
+} // 마지막에 빠졌던 중괄호를 닫았습니다.
