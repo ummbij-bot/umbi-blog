@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic';
 
 // 🔄 재시도 로직 함수 (타입 수정됨)
 async function generateWithRetry(
-  model: GenerativeModel, // any 대신 정확한 타입 사용
+  model: GenerativeModel, // any 대신 정확한 타입(GenerativeModel) 사용
   prompt: string,
   retries = 3,
   initialDelay = 2000
@@ -17,7 +17,7 @@ async function generateWithRetry(
     try {
       return await model.generateContent(prompt);
     } catch (error: unknown) { // any 대신 unknown 사용
-      // 에러 객체의 타입을 안전하게 추론
+      // 에러 객체의 타입을 안전하게 추론 (status 속성이 있는지 확인)
       const err = error as { status?: number };
 
       // 429(Too Many Requests) 또는 503(Service Unavailable) 에러일 때만 재시도
@@ -80,7 +80,8 @@ export async function GET(request: Request) {
 
     // 6. AI 글쓰기 (재시도 함수 사용)
     const result = await generateWithRetry(model, prompt);
-    const responseText = result?.response // result가 undefined일 수 있는 상황 방어
+    // result가 undefined일 수 있는 상황 방어 (?.)
+    const responseText = result?.response 
       .text()
       .replace(/```json|```/g, '')
       .trim();
@@ -90,7 +91,7 @@ export async function GET(request: Request) {
       if (!responseText) throw new Error('Empty response');
       aiData = JSON.parse(responseText);
     } catch {
-      // (수정됨) 사용하지 않는 변수 'e' 제거
+      // (수정됨) 사용하지 않는 변수 'e' 제거 -> 그냥 catch {} 만 사용
       throw new Error('AI returned invalid JSON');
     }
 
