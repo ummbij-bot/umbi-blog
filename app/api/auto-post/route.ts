@@ -1,20 +1,31 @@
 import { NextResponse } from 'next/server';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+// 1. GenerativeModel 타입 추가 (Type Safety)
+import { GoogleGenerativeAI, GenerativeModel } from '@google/generative-ai';
 import { Octokit } from 'octokit';
 
 export const maxDuration = 60;
 export const dynamic = 'force-dynamic';
 
-// 🔄 재시도 로직 함수 (지수 백오프 적용)
-async function generateWithRetry(model: any, prompt: string, retries = 3, initialDelay = 2000) {
+// 🔄 재시도 로직 함수 (타입 수정됨)
+async function generateWithRetry(
+  model: GenerativeModel, // any 대신 정확한 타입 사용
+  prompt: string,
+  retries = 3,
+  initialDelay = 2000
+) {
   for (let i = 0; i < retries; i++) {
     try {
       return await model.generateContent(prompt);
-    } catch (error: any) {
+    } catch (error: unknown) { // any 대신 unknown 사용
+      // 에러 객체의 타입을 안전하게 추론
+      const err = error as { status?: number };
+
       // 429(Too Many Requests) 또는 503(Service Unavailable) 에러일 때만 재시도
-      if ((error.status === 429 || error.status === 503) && i < retries - 1) {
-        const delay = initialDelay * Math.pow(2, i); // 2초 -> 4초 -> 8초
-        console.warn(`⚠️ API Quota hit. Retrying in ${delay}ms... (Attempt ${i + 1}/${retries})`);
+      if ((err.status === 429 || err.status === 503) && i < retries - 1) {
+        const delay = initialDelay * Math.pow(2, i);
+        console.warn(
+          `⚠️ API Quota hit. Retrying in ${delay}ms... (Attempt ${i + 1}/${retries})`
+        );
         await new Promise((resolve) => setTimeout(resolve, delay));
         continue;
       }
@@ -31,9 +42,9 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // 2. Gemini 설정 (여전히 2.0 사용, 실패 시 재시도 로직이 방어)
+    // 2. Gemini 설정
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
     // 3. 주제 및 날짜 설정
     const categories = ['finance', 'tech', 'wellness'];
@@ -67,18 +78,19 @@ export async function GET(request: Request) {
       - readTime: "5 min read"
     `;
 
-    // 6. AI 글쓰기 (✅ 수정된 부분: 재시도 함수 사용)
+    // 6. AI 글쓰기 (재시도 함수 사용)
     const result = await generateWithRetry(model, prompt);
-    
-    const responseText = result.response
+    const responseText = result?.response // result가 undefined일 수 있는 상황 방어
       .text()
       .replace(/```json|```/g, '')
       .trim();
 
     let aiData;
     try {
+      if (!responseText) throw new Error('Empty response');
       aiData = JSON.parse(responseText);
-    } catch (e) {
+    } catch {
+      // (수정됨) 사용하지 않는 변수 'e' 제거
       throw new Error('AI returned invalid JSON');
     }
 
