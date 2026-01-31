@@ -3,12 +3,14 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
+// 에러를 던지는 대신 콘솔 로그만 찍도록 수정
 if (!supabaseUrl || !supabaseKey) {
-  throw new Error('Missing Supabase environment variables');
+  console.warn('주의: Supabase 환경 변수가 없습니다. API 호출이 실패할 수 있습니다.');
 }
 
-export const supabase = createClient(supabaseUrl, supabaseKey);
-
+export const supabase = (supabaseUrl && supabaseKey) 
+  ? createClient(supabaseUrl, supabaseKey) 
+  : null as any; // 변수가 없으면 null을 반환
 // 타입 정의
 export interface Post {
   id: string;
