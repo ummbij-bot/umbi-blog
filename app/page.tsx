@@ -17,12 +17,7 @@ async function getPosts() {
   return data || [];
 }
 
-export default async function Home() {
-  const posts = await getPosts();
-
-  return (
-    <Suspense fallback={<div className="min-h-screen bg-gray-50 flex items-center justify-center">Loading...</div>}>
-      <HomeClient initialPosts={posts} />
-    </Suspense>
-  );
-}
+// 데이터를 가져오기 전 supabase 존재 여부를 먼저 확인합니다.
+const { data: posts } = supabase
+  ? await supabase.from('posts').select('*')
+  : { data: [] };

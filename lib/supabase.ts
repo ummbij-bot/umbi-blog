@@ -8,10 +8,10 @@ if (!supabaseUrl || !supabaseKey) {
   console.warn('주의: Supabase 환경 변수가 없습니다. API 호출이 실패할 수 있습니다.');
 }
 
-export const supabase = (supabaseUrl && supabaseKey) 
+// 기존 코드를 이렇게 조금 더 안전하게 바꿔보세요.
+export const supabase = (typeof window !== 'undefined' || (supabaseUrl && supabaseKey)) 
   ? createClient(supabaseUrl, supabaseKey) 
-  : null as any; // 변수가 없으면 null을 반환
-// 타입 정의
+  : null;
 export interface Post {
   id: string;
   slug: string;
