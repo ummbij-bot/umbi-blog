@@ -5965,3 +5965,7 @@ export function getPostBySlug(
 export function getPostsByCategory(category: string): Post[] {
   return posts.filter((post) => post.category === category);
 }
+
+export function getAllPosts(): Post[] {
+  return posts;
+}

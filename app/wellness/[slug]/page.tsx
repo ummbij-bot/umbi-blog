@@ -3,6 +3,7 @@ import { posts } from '@/lib/posts';
 import Image from 'next/image';
 import Link from 'next/link';
 import Comments from '@/components/Comments';
+import AdSense from '@/components/ads/AdSense';
 import Script from 'next/script';
 import ReactMarkdown from 'react-markdown';
 import type { Metadata } from 'next';
@@ -116,17 +117,18 @@ export default async function BlogPost({ params }: PageProps) {
               <span>{post.readTime}</span>
             </div>
 
+            <AdSense adSlot="auto" />
+
             <div className="prose prose-lg max-w-none">
               <ReactMarkdown
                 components={{
                   img: (props) => (
                     <span className="block relative w-full h-[400px] my-8 rounded-xl overflow-hidden shadow-lg">
-                      {/* ✅ 수정됨: src를 string으로 강제 변환 */}
-                      <Image 
-                        src={(props.src as string) || '/placeholder.jpg'} 
-                        alt={props.alt || 'Blog Image'} 
-                        fill 
-                        className="object-cover" 
+                      <Image
+                        src={(props.src as string) || '/placeholder.jpg'}
+                        alt={props.alt || 'Blog Image'}
+                        fill
+                        className="object-cover"
                       />
                     </span>
                   ),
@@ -139,6 +141,8 @@ export default async function BlogPost({ params }: PageProps) {
                 {post.content}
               </ReactMarkdown>
             </div>
+
+            <AdSense adSlot="auto" />
 
             <div className="mt-12 pt-8 border-t border-neutral-200">
               <Comments slug={post.slug} />

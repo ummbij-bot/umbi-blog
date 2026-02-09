@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Post } from '@/lib/supabase';
+import { Post } from '@/lib/posts';
 
 interface HomeClientProps {
   initialPosts: Post[];
@@ -74,7 +74,7 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
                   <div className="text-xs text-gray-500 mb-2 flex items-center gap-2">
                     <span>{post.date}</span>
                     <span>•</span>
-                    <span>{post.read_time}</span>
+                    <span>{post.readTime}</span>
                   </div>
                   <h2 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors line-clamp-2">
                     {post.title}

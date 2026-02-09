@@ -7,6 +7,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'images.unsplash.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'image.pollinations.ai',
+      },
     ],
   },
   // rewrites 부분은 삭제했습니다. 이제 필요 없습니다!

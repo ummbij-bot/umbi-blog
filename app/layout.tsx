@@ -61,9 +61,7 @@ export const metadata: Metadata = {
     images: ['/og-image.png'],
     creator: '@umbi',
   },
-  verification: {
-    google: 'YOUR_GOOGLE_VERIFICATION_CODE',
-  },
+  // verification: { google: 'ADD_YOUR_GOOGLE_SEARCH_CONSOLE_CODE_HERE' },
   alternates: {
     canonical: 'https://umbi-blog.vercel.app',
   },
@@ -77,6 +75,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        {/* Google AdSense */}
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6470985227057240"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
         {/* Organization Schema */}
         <Script
           id="organization-schema"
