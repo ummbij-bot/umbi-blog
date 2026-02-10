@@ -36,10 +36,21 @@ export default function WellnessPage() {
           >
             Health & Wellness
           </h1>
-          <p className="text-xl text-white opacity-90 max-w-2xl">
+          <p className="text-xl text-white opacity-90 max-w-2xl mb-6">
             Achieve optimal health with tips on fitness, nutrition, mental
             wellness, and lifestyle.
           </p>
+          <div className="text-white/80 max-w-3xl space-y-3 text-base leading-relaxed">
+            <p>
+              Welcome to Umbi&apos;s Health &amp; Wellness hub — your trusted companion on the journey to a healthier, happier life. We believe that wellness is not just about the absence of illness, but about building sustainable habits that nourish your body, mind, and spirit every single day.
+            </p>
+            <p>
+              Our wellness content covers a broad spectrum of topics designed to support your overall well-being: evidence-based fitness routines for every level, from beginner bodyweight workouts to advanced training splits; nutrition guides including meal prep strategies, macronutrient breakdowns, and seasonal eating plans; sleep science and optimization techniques backed by clinical research; stress management and mindfulness practices; and mental health awareness resources.
+            </p>
+            <p>
+              Each article is informed by contributors with credentials in sports medicine, nutrition science, and certified personal training (NASM). We reference peer-reviewed studies and clinical guidelines wherever possible. However, our content is for educational purposes only and should never replace professional medical advice. Always consult your healthcare provider before making significant changes to your diet or exercise routine.
+            </p>
+          </div>
         </div>
       </section>
 

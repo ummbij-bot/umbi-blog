@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { FiTwitter, FiFacebook, FiInstagram, FiLinkedin } from 'react-icons/fi';
+import { FiGithub, FiMail } from 'react-icons/fi';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -19,19 +19,13 @@ export default function Footer() {
             <p className="text-sm mb-6" style={{ color: 'var(--color-neutral-400)' }}>
               Your source for insightful articles on finance, technology, and wellness.
             </p>
-            
+
             <div className="flex gap-4">
-              <a href="#" className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'var(--color-neutral-800)' }}>
-                <FiTwitter size={20} />
+              <a href="https://github.com/ummbij-bot/umbi-blog" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-lg flex items-center justify-center hover:opacity-80 transition-opacity" style={{ backgroundColor: 'var(--color-neutral-800)' }}>
+                <FiGithub size={20} />
               </a>
-              <a href="#" className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'var(--color-neutral-800)' }}>
-                <FiFacebook size={20} />
-              </a>
-              <a href="#" className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'var(--color-neutral-800)' }}>
-                <FiInstagram size={20} />
-              </a>
-              <a href="#" className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'var(--color-neutral-800)' }}>
-                <FiLinkedin size={20} />
+              <a href="mailto:ummbij@gmail.com" className="w-10 h-10 rounded-lg flex items-center justify-center hover:opacity-80 transition-opacity" style={{ backgroundColor: 'var(--color-neutral-800)' }}>
+                <FiMail size={20} />
               </a>
             </div>
           </div>

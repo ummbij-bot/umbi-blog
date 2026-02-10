@@ -23,9 +23,20 @@ export default function TechPage() {
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4" style={{ fontFamily: 'var(--font-display)' }}>
             Tech & Productivity
           </h1>
-          <p className="text-xl text-white opacity-90 max-w-2xl">
+          <p className="text-xl text-white opacity-90 max-w-2xl mb-6">
             Stay ahead with the latest technology trends, tools, and productivity hacks for modern life.
           </p>
+          <div className="text-white/80 max-w-3xl space-y-3 text-base leading-relaxed">
+            <p>
+              Welcome to Umbi&apos;s Tech &amp; Productivity hub — your go-to destination for navigating the rapidly evolving world of technology. From the latest AI tools reshaping how we work to essential cybersecurity practices that keep your data safe, we break down complex tech topics into clear, actionable guides that anyone can follow.
+            </p>
+            <p>
+              Our technology coverage spans a wide range of topics: artificial intelligence and machine learning applications, productivity software reviews and comparisons, remote work setup optimization, coding and development resources, cloud computing essentials, smartphone and gadget recommendations, and digital privacy best practices. We test and evaluate every tool we recommend, providing honest assessments backed by hands-on experience and real-world benchmarks.
+            </p>
+            <p>
+              Whether you&apos;re a seasoned developer looking for the next great tool or a non-technical professional wanting to boost your productivity, our articles are written to meet you where you are. We focus on practical value — not just features, but how technology can genuinely improve your daily workflow and long-term career growth.
+            </p>
+          </div>
         </div>
       </section>
 

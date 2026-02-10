@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import Comments from '@/components/Comments';
 import AdSense from '@/components/ads/AdSense';
+import BlogCard from '@/components/blog/BlogCard';
 import Script from 'next/script';
 import ReactMarkdown from 'react-markdown';
 import type { Metadata } from 'next';
@@ -62,6 +63,10 @@ export default async function BlogPost({ params }: PageProps) {
   if (!post) {
     notFound();
   }
+
+  const relatedPosts = posts
+    .filter((p) => p.category === 'finance' && p.slug !== post.slug)
+    .slice(0, 3);
 
   const breadcrumbSchema = {
     '@context': 'https://schema.org',
@@ -145,6 +150,27 @@ export default async function BlogPost({ params }: PageProps) {
             <div className="mt-12 pt-8 border-t border-neutral-200">
                <Comments slug={post.slug} />
             </div>
+
+            {relatedPosts.length > 0 && (
+              <div className="mt-16 pt-8 border-t border-neutral-200">
+                <h2 className="text-2xl font-bold mb-6" style={{ fontFamily: 'var(--font-display)' }}>
+                  Related Articles
+                </h2>
+                <div className="grid md:grid-cols-3 gap-6">
+                  {relatedPosts.map((rp) => (
+                    <BlogCard
+                      key={rp.slug}
+                      title={rp.title}
+                      excerpt={rp.excerpt}
+                      date={rp.date}
+                      category="Finance"
+                      slug={rp.slug}
+                      image={rp.image}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </article>
