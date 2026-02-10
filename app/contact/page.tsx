@@ -20,7 +20,7 @@ export default function ContactPage() {
     // Simulate form submission (replace with real API endpoint like Formspree, EmailJS, etc.)
     try {
       // Using mailto as fallback — in production, connect to an API route or service
-      const mailtoLink = `mailto:ummbijbot@gmail.com?subject=${encodeURIComponent(
+      const mailtoLink = `mailto:ummbij@gmail.com?subject=${encodeURIComponent(
         `[Umbi Contact] ${formData.subject}`
       )}&body=${encodeURIComponent(
         `Name: ${formData.name}\nEmail: ${formData.email}\n\n${formData.message}`
@@ -71,7 +71,7 @@ export default function ContactPage() {
                     <FiCheckCircle className="text-emerald-600 mt-0.5 flex-shrink-0" size={20} />
                     <div>
                       <p className="font-semibold text-emerald-800">Message ready to send!</p>
-                      <p className="text-emerald-700 text-sm">Your email client should have opened with the message pre-filled. If it didn&apos;t, please email us directly at ummbijbot@gmail.com.</p>
+                      <p className="text-emerald-700 text-sm">Your email client should have opened with the message pre-filled. If it didn&apos;t, please email us directly at ummbij@gmail.com.</p>
                     </div>
                   </div>
                 )}
@@ -81,7 +81,7 @@ export default function ContactPage() {
                     <FiAlertCircle className="text-red-600 mt-0.5 flex-shrink-0" size={20} />
                     <div>
                       <p className="font-semibold text-red-800">Something went wrong.</p>
-                      <p className="text-red-700 text-sm">Please try again or email us directly at ummbijbot@gmail.com.</p>
+                      <p className="text-red-700 text-sm">Please try again or email us directly at ummbij@gmail.com.</p>
                     </div>
                   </div>
                 )}
@@ -184,14 +184,14 @@ export default function ContactPage() {
                 <div className="space-y-4">
                   <div>
                     <p className="text-sm font-semibold text-neutral-800">General Inquiries</p>
-                    <a href="mailto:ummbijbot@gmail.com" className="text-indigo-600 hover:text-indigo-700 text-sm">
-                      ummbijbot@gmail.com
+                    <a href="mailto:ummbij@gmail.com" className="text-indigo-600 hover:text-indigo-700 text-sm">
+                      ummbij@gmail.com
                     </a>
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-neutral-800">Business & Partnerships</p>
-                    <a href="mailto:ummbijbot@gmail.com" className="text-indigo-600 hover:text-indigo-700 text-sm">
-                      ummbijbot@gmail.com
+                    <a href="mailto:ummbij@gmail.com" className="text-indigo-600 hover:text-indigo-700 text-sm">
+                      ummbij@gmail.com
                     </a>
                   </div>
                 </div>
@@ -237,7 +237,7 @@ export default function ContactPage() {
                   <li>- Relevant professional experience</li>
                 </ul>
                 <p className="text-indigo-700 text-sm mt-3">
-                  Send your pitch to <a href="mailto:ummbijbot@gmail.com" className="font-semibold underline">ummbijbot@gmail.com</a> with
+                  Send your pitch to <a href="mailto:ummbij@gmail.com" className="font-semibold underline">ummbij@gmail.com</a> with
                   subject line &quot;Guest Post Pitch.&quot;
                 </p>
               </div>
