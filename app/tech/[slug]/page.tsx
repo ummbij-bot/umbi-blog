@@ -32,15 +32,27 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: post.title,
     description: post.excerpt,
-    keywords: ['tech', 'technology', ...post.title.split(' ').slice(0, 5)],
-    authors: [{ name: 'Umbi Team' }],
+    keywords: ['tech', 'technology', 'productivity', ...post.title.split(' ').slice(0, 5)],
+    authors: [{ name: post.author || 'Umbi Team' }],
+    alternates: {
+      canonical: url,
+    },
     openGraph: {
       type: 'article',
       url,
       title: post.title,
       description: post.excerpt,
       publishedTime: post.date,
-      images: [{ url: post.image || '/og-image.png' }],
+      modifiedTime: post.date,
+      authors: [post.author || 'Umbi Team'],
+      section: 'Technology',
+      images: [{ url: post.image || '/og-image.png', width: 1200, height: 630, alt: post.title }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description: post.excerpt,
+      images: [post.image || '/og-image.png'],
     },
   };
 }
@@ -55,7 +67,7 @@ export async function generateStaticParams() {
 
 export default async function BlogPost({ params }: PageProps) {
   const { slug } = await params;
-  
+
   const post = posts.find(
     (p) => p.slug === slug && p.category === 'tech'
   );
@@ -68,19 +80,50 @@ export default async function BlogPost({ params }: PageProps) {
     .filter((p) => p.category === 'tech' && p.slug !== post.slug)
     .slice(0, 3);
 
+  const articleUrl = `https://umbi-blog.vercel.app/tech/${post.slug}`;
+
   const breadcrumbSchema = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://umbi-blog.vercel.app' },
       { '@type': 'ListItem', position: 2, name: 'Tech', item: 'https://umbi-blog.vercel.app/tech' },
-      { '@type': 'ListItem', position: 3, name: post.title, item: `https://umbi-blog.vercel.app/tech/${post.slug}` },
+      { '@type': 'ListItem', position: 3, name: post.title, item: articleUrl },
     ],
+  };
+
+  const articleSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: post.title,
+    description: post.excerpt,
+    image: post.image || 'https://umbi-blog.vercel.app/og-image.png',
+    datePublished: post.date,
+    dateModified: post.date,
+    author: {
+      '@type': 'Person',
+      name: post.author || 'Umbi Team',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Umbi',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://umbi-blog.vercel.app/logo.png',
+      },
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': articleUrl,
+    },
+    articleSection: 'Technology',
+    wordCount: post.content.split(/\s+/).length,
   };
 
   return (
     <>
       <Script id="breadcrumb-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+      <Script id="article-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
 
       <article className="min-h-screen bg-neutral-50">
         <div className="bg-white border-b border-neutral-200">

@@ -92,11 +92,14 @@ export default function RootLayout({
               '@type': 'Organization',
               name: 'Umbi',
               url: 'https://umbi-blog.vercel.app',
-              logo: 'https://umbi-blog.vercel.app/logo.png',
-              description: 'Expert advice on personal finance, technology, and wellness',
+              logo: {
+                '@type': 'ImageObject',
+                url: 'https://umbi-blog.vercel.app/logo.png',
+              },
+              description: 'Expert advice on personal finance, technology, and wellness. Actionable insights to help you make better decisions in life.',
+              email: 'ummbij@gmail.com',
               sameAs: [
-                'https://twitter.com/umbi',
-                'https://linkedin.com/company/umbi',
+                'https://github.com/ummbij-bot/umbi-blog',
               ],
             }),
           }}

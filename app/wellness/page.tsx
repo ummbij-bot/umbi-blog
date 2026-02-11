@@ -1,20 +1,54 @@
 import { getPostsByCategory } from '@/lib/posts';
 import BlogCard from '@/components/blog/BlogCard';
 import Link from 'next/link';
+import Script from 'next/script';
 import { FiHeart, FiActivity, FiArrowRight } from 'react-icons/fi';
+import type { Metadata } from 'next';
 
 export const revalidate = 0;
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Health & Wellness - Umbi',
-  description:
-    'Achieve optimal health with tips on fitness, nutrition, mental wellness, and lifestyle.',
+  description: 'Achieve optimal health with evidence-based tips on fitness routines, nutrition plans, sleep science, mental wellness, and sustainable lifestyle habits.',
+  alternates: {
+    canonical: 'https://umbi-blog.vercel.app/wellness',
+  },
+  openGraph: {
+    title: 'Health & Wellness - Umbi',
+    description: 'Achieve optimal health with tips on fitness, nutrition, mental wellness, and lifestyle.',
+    url: 'https://umbi-blog.vercel.app/wellness',
+    type: 'website',
+  },
 };
 
 export default function WellnessPage() {
   const posts = getPostsByCategory('wellness');
 
+  const collectionSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'Health & Wellness Articles',
+    description: 'Achieve optimal health with tips on fitness, nutrition, mental wellness, and lifestyle.',
+    url: 'https://umbi-blog.vercel.app/wellness',
+    mainEntity: {
+      '@type': 'ItemList',
+      itemListElement: posts.map((post, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        url: `https://umbi-blog.vercel.app/wellness/${post.slug}`,
+        name: post.title,
+      })),
+    },
+    isPartOf: {
+      '@type': 'WebSite',
+      name: 'Umbi',
+      url: 'https://umbi-blog.vercel.app',
+    },
+  };
+
   return (
+    <>
+    <Script id="collection-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionSchema) }} />
     <div
       style={{ backgroundColor: 'var(--color-neutral-50)', minHeight: '100vh' }}
     >
@@ -147,5 +181,6 @@ export default function WellnessPage() {
         </div>
       </section>
     </div>
+    </>
   );
 }

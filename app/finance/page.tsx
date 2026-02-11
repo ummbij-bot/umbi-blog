@@ -1,21 +1,54 @@
 import { getPostsByCategory } from '@/lib/posts';
 import BlogCard from '@/components/blog/BlogCard';
 import Link from 'next/link';
+import Script from 'next/script';
 import { FiDollarSign, FiActivity, FiArrowRight } from 'react-icons/fi';
+import type { Metadata } from 'next';
 
-// Next.js App Router 캐싱 설정 (ISR/SSG 옵션에 따라 조정 가능)
 export const revalidate = 0;
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Personal Finance - Umbi',
-  description:
-    'Expert advice on budgeting, investing, saving, and building wealth.',
+  description: 'Expert advice on budgeting, investing, saving, and building wealth. Comprehensive guides on emergency funds, retirement planning, debt reduction, and smart money management.',
+  alternates: {
+    canonical: 'https://umbi-blog.vercel.app/finance',
+  },
+  openGraph: {
+    title: 'Personal Finance - Umbi',
+    description: 'Expert advice on budgeting, investing, saving, and building wealth.',
+    url: 'https://umbi-blog.vercel.app/finance',
+    type: 'website',
+  },
 };
 
 export default function FinancePage() {
   const posts = getPostsByCategory('finance');
 
+  const collectionSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'Personal Finance Articles',
+    description: 'Expert advice on budgeting, investing, saving, and building wealth.',
+    url: 'https://umbi-blog.vercel.app/finance',
+    mainEntity: {
+      '@type': 'ItemList',
+      itemListElement: posts.map((post, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        url: `https://umbi-blog.vercel.app/finance/${post.slug}`,
+        name: post.title,
+      })),
+    },
+    isPartOf: {
+      '@type': 'WebSite',
+      name: 'Umbi',
+      url: 'https://umbi-blog.vercel.app',
+    },
+  };
+
   return (
+    <>
+    <Script id="collection-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionSchema) }} />
     <div
       style={{ backgroundColor: 'var(--color-neutral-50)', minHeight: '100vh' }}
     >
@@ -154,5 +187,6 @@ export default function FinancePage() {
         </div>
       </section>
     </div>
+    </>
   );
 }

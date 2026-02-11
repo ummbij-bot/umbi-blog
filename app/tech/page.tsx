@@ -2,17 +2,53 @@ import BlogCard from '@/components/blog/BlogCard';
 import { getPostsByCategory } from '@/lib/posts';
 import { FiCpu, FiActivity, FiArrowRight } from 'react-icons/fi';
 import Link from 'next/link';
+import Script from 'next/script';
+import type { Metadata } from 'next';
+
 export const revalidate = 0;
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Tech & Productivity - Umbi',
-  description: 'Stay ahead with the latest technology trends, tools, and productivity hacks.',
+  description: 'Stay ahead with the latest technology trends, AI tools, productivity hacks, remote work setups, and software reviews. Expert guides for modern professionals.',
+  alternates: {
+    canonical: 'https://umbi-blog.vercel.app/tech',
+  },
+  openGraph: {
+    title: 'Tech & Productivity - Umbi',
+    description: 'Stay ahead with the latest technology trends, tools, and productivity hacks.',
+    url: 'https://umbi-blog.vercel.app/tech',
+    type: 'website',
+  },
 };
 
 export default function TechPage() {
   const posts = getPostsByCategory('tech');
 
+  const collectionSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'Tech & Productivity Articles',
+    description: 'Stay ahead with the latest technology trends, tools, and productivity hacks.',
+    url: 'https://umbi-blog.vercel.app/tech',
+    mainEntity: {
+      '@type': 'ItemList',
+      itemListElement: posts.map((post, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        url: `https://umbi-blog.vercel.app/tech/${post.slug}`,
+        name: post.title,
+      })),
+    },
+    isPartOf: {
+      '@type': 'WebSite',
+      name: 'Umbi',
+      url: 'https://umbi-blog.vercel.app',
+    },
+  };
+
   return (
+    <>
+    <Script id="collection-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionSchema) }} />
     <div style={{ backgroundColor: 'var(--color-neutral-50)', minHeight: '100vh' }}>
       <section className="py-16" style={{ background: 'linear-gradient(135deg, #3b82f6, #2563eb)' }}>
         <div className="container-custom">
@@ -114,5 +150,6 @@ export default function TechPage() {
         </div>
       </section>
     </div>
+    </>
   );
 }

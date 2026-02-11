@@ -1,38 +1,98 @@
 import { MetadataRoute } from 'next'
-import { posts } from '@/lib/posts' // ✅ 저장된 글 데이터를 직접 가져옵니다
+import { posts } from '@/lib/posts'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://umbi-blog.vercel.app'
 
-  // 1. 고정 페이지 (작성해주신 목록 그대로 유지)
-  const routes = [
-    '',
-    '/finance',
-    '/tech',
-    '/wellness',
-    '/about',
-    '/contact',
-    '/privacy',
-    '/terms',
-    '/finance/tools/calculator',
-    '/wellness/tools/bmi-calculator',
-  ].map((route) => ({
-    url: `${baseUrl}${route}`,
-    lastModified: new Date(),
-    changeFrequency: 'daily' as const,
-    priority: route === '' ? 1 : 0.9,
-  }))
+  // Static pages with appropriate priorities and change frequencies
+  const staticPages: MetadataRoute.Sitemap = [
+    {
+      url: baseUrl,
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 1.0,
+    },
+    {
+      url: `${baseUrl}/finance`,
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/tech`,
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/wellness`,
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/about`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/contact`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.6,
+    },
+    {
+      url: `${baseUrl}/privacy`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.4,
+    },
+    {
+      url: `${baseUrl}/terms`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.4,
+    },
+    {
+      url: `${baseUrl}/finance/tools/calculator`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/finance/tools/ai-advisor`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/tech/tools/ai-advisor`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/wellness/tools/bmi-calculator`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/wellness/tools/ai-coach`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+  ]
 
-  // 2. 블로그 글 목록 (✅ 여기가 핵심! 자동으로 불러오도록 변경)
-  const blogPosts = posts.map((post) => ({
-    // 카테고리와 슬러그를 조합해서 주소를 만듭니다
+  // Dynamic blog post pages
+  const blogPosts: MetadataRoute.Sitemap = posts.map((post) => ({
     url: `${baseUrl}/${post.category}/${post.slug}`,
-    // 글 작성 날짜를 반영합니다
     lastModified: new Date(post.date),
-    changeFrequency: 'weekly' as const,
+    changeFrequency: 'weekly',
     priority: 0.8,
   }))
 
-  // 두 목록을 합쳐서 리턴
-  return [...routes, ...blogPosts]
+  return [...staticPages, ...blogPosts]
 }

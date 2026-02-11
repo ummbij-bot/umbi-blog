@@ -5,6 +5,9 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'About Umbi - Our Mission, Team & Expertise',
   description: 'Umbi is a trusted resource for personal finance, technology, and wellness insights. Learn about our mission, editorial standards, and the expertise behind our content.',
+  alternates: {
+    canonical: 'https://umbi-blog.vercel.app/about',
+  },
   openGraph: {
     title: 'About Umbi - Our Mission, Team & Expertise',
     description: 'Umbi is a trusted resource for personal finance, technology, and wellness insights.',

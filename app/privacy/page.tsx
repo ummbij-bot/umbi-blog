@@ -1,6 +1,11 @@
-export const metadata = {
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
   title: 'Privacy Policy - Umbi',
   description: 'Learn how Umbi collects, uses, and protects your personal data. Includes Google AdSense, Google Analytics, and third-party service disclosures.',
+  alternates: {
+    canonical: 'https://umbi-blog.vercel.app/privacy',
+  },
 };
 
 export default function PrivacyPage() {

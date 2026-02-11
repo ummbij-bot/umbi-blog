@@ -1,6 +1,11 @@
-export const metadata = {
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
   title: 'Terms of Service - Umbi',
   description: 'Read the terms and conditions for using Umbi Blog, including disclaimers for financial and health content, intellectual property rights, and comments policy.',
+  alternates: {
+    canonical: 'https://umbi-blog.vercel.app/terms',
+  },
 };
 
 export default function TermsPage() {
