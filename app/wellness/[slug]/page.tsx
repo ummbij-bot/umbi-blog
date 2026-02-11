@@ -2,7 +2,10 @@ import { notFound } from 'next/navigation';
 import { posts } from '@/lib/posts';
 import Image from 'next/image';
 import Link from 'next/link';
-import Comments from '@/components/Comments';
+import dynamic from 'next/dynamic';
+const Comments = dynamic(() => import('@/components/Comments'), {
+  loading: () => <div className="mt-16 pt-12 border-t border-neutral-200 text-center py-8 text-neutral-400">Loading comments...</div>,
+});
 import AdSense from '@/components/ads/AdSense';
 import BlogCard from '@/components/blog/BlogCard';
 import Script from 'next/script';
@@ -144,6 +147,7 @@ export default async function BlogPost({ params }: PageProps) {
             alt={post.title}
             fill
             priority
+            sizes="100vw"
             className="object-cover opacity-90"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
@@ -176,6 +180,7 @@ export default async function BlogPost({ params }: PageProps) {
                         src={(props.src as string) || '/placeholder.jpg'}
                         alt={props.alt || 'Blog Image'}
                         fill
+                        sizes="(max-width: 768px) 100vw, 768px"
                         className="object-cover"
                       />
                     </span>

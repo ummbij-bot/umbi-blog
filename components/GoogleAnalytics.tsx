@@ -5,7 +5,6 @@ import Script from 'next/script';
 export default function GoogleAnalytics() {
   // .env.local 파일에 적은 변수명(NEXT_PUBLIC_GA_ID)과 똑같아야 합니다.
   const gaId = process.env.NEXT_PUBLIC_GA_ID;
-console.log('GA ID Check:', gaId);
   // ID가 없으면 로드하지 않음
   if (!gaId) return null;
 
