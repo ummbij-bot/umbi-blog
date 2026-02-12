@@ -116,9 +116,9 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={inter.className}>
+      <body className={`${inter.className} ${inter.variable}`}>
         <Navbar />
-        <main>{children}</main>
+        {children}
         <Footer />
         
         {/* Google Analytics */}
