@@ -1,30 +1,38 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
-// 1. Window 객체에 adsbygoogle이 있다는 것을 정식으로 선언합니다.
-// any 대신 unknown[]을 사용하여 ESLint 에러를 방지합니다.
 declare global {
   interface Window {
     adsbygoogle: unknown[];
   }
 }
 
+type AdLayout = 'in-article' | 'in-feed' | 'display';
+
 interface AdSenseProps {
   adSlot: string;
-  adFormat?: string;
+  adFormat?: 'auto' | 'rectangle' | 'horizontal' | 'vertical' | 'fluid';
+  adLayout?: AdLayout;
   fullWidthResponsive?: boolean;
+  className?: string;
 }
 
-export default function AdSense({ 
-  adSlot, 
+export default function AdSense({
+  adSlot,
   adFormat = 'auto',
-  fullWidthResponsive = true 
+  adLayout,
+  fullWidthResponsive = true,
+  className = '',
 }: AdSenseProps) {
+  const adRef = useRef<HTMLDivElement>(null);
+  const isLoaded = useRef(false);
+
   useEffect(() => {
+    if (isLoaded.current) return;
+    isLoaded.current = true;
+
     try {
-      // 2. 이제 window.adsbygoogle을 바로 사용할 수 있습니다.
-      // (window as any) 같은 편법을 쓰지 않아도 됩니다.
       const ads = window.adsbygoogle || [];
       ads.push({});
       window.adsbygoogle = ads;
@@ -34,15 +42,39 @@ export default function AdSense({
   }, []);
 
   return (
-    <div className="my-8 overflow-hidden">
+    <div ref={adRef} className={`ad-container my-8 overflow-hidden text-center ${className}`}>
+      <p className="text-xs text-neutral-400 mb-1 uppercase tracking-wider">Advertisement</p>
       <ins
         className="adsbygoogle"
         style={{ display: 'block' }}
         data-ad-client="ca-pub-6470985227057240"
         data-ad-slot={adSlot}
         data-ad-format={adFormat}
+        {...(adLayout ? { 'data-ad-layout': adLayout } : {})}
         data-full-width-responsive={fullWidthResponsive.toString()}
       />
     </div>
+  );
+}
+
+/** Pre-configured ad components for common placements */
+export function InArticleAd({ adSlot }: { adSlot: string }) {
+  return (
+    <AdSense
+      adSlot={adSlot}
+      adFormat="fluid"
+      adLayout="in-article"
+      className="my-12"
+    />
+  );
+}
+
+export function DisplayAd({ adSlot }: { adSlot: string }) {
+  return (
+    <AdSense
+      adSlot={adSlot}
+      adFormat="auto"
+      fullWidthResponsive={true}
+    />
   );
 }

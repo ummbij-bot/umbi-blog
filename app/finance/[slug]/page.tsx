@@ -3,10 +3,12 @@ import { posts } from '@/lib/posts';
 import Image from 'next/image';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
+import AuthorBox from '@/components/blog/AuthorBox';
+import ContentDisclaimer from '@/components/blog/ContentDisclaimer';
 const Comments = dynamic(() => import('@/components/Comments'), {
   loading: () => <div className="mt-16 pt-12 border-t border-neutral-200 text-center py-8 text-neutral-400">Loading comments...</div>,
 });
-import AdSense from '@/components/ads/AdSense';
+import { InArticleAd, DisplayAd } from '@/components/ads/AdSense';
 import BlogCard from '@/components/blog/BlogCard';
 import Script from 'next/script';
 import ReactMarkdown from 'react-markdown';
@@ -163,13 +165,14 @@ export default async function BlogPost({ params }: PageProps) {
 
             <h1 className="text-4xl md:text-5xl font-bold mb-6">{post.title}</h1>
 
-            <div className="flex items-center gap-4 text-neutral-600 mb-8 pb-8 border-b border-neutral-200">
-              <time>{post.date}</time>
-              <span>•</span>
-              <span>{post.readTime}</span>
-            </div>
+            <ContentDisclaimer
+              category={post.category}
+              date={post.date}
+              readTime={post.readTime}
+              wordCount={post.content.split(/\s+/).filter(Boolean).length}
+            />
 
-            <AdSense adSlot="auto" />
+            <InArticleAd adSlot="auto" />
 
             <div className="prose prose-lg max-w-none">
               <ReactMarkdown
@@ -193,7 +196,26 @@ export default async function BlogPost({ params }: PageProps) {
               </ReactMarkdown>
             </div>
 
-            <AdSense adSlot="auto" />
+            <InArticleAd adSlot="auto" />
+
+            {/* Author Profile */}
+            <AuthorBox author={post.author} date={post.date} />
+
+            {/* Interactive Tools CTA */}
+            <div className="mt-12 p-6 rounded-2xl bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-100">
+              <h3 className="text-lg font-bold text-emerald-800 mb-2">Try Our Free Finance Tools</h3>
+              <p className="text-emerald-700 text-sm mb-4">Put what you learned into practice with our interactive calculators and AI advisor.</p>
+              <div className="flex flex-wrap gap-3">
+                <Link href="/finance/tools/calculator" className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-semibold hover:bg-emerald-700 transition-colors">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
+                  Compound Interest Calculator
+                </Link>
+                <Link href="/finance/tools/ai-advisor" className="inline-flex items-center gap-2 px-4 py-2 bg-white text-emerald-700 border border-emerald-200 rounded-lg text-sm font-semibold hover:bg-emerald-50 transition-colors">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
+                  AI Financial Advisor
+                </Link>
+              </div>
+            </div>
 
             <div className="mt-12 pt-8 border-t border-neutral-200">
                <Comments slug={post.slug} />

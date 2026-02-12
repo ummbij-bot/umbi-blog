@@ -3,6 +3,7 @@ import localFont from 'next/font/local';
 import './globals.css';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/layout/Footer';
+import CookieConsent from '@/components/CookieConsent';
 import Script from 'next/script';
 
 const inter = localFont({
@@ -62,7 +63,9 @@ export const metadata: Metadata = {
     images: ['/og-image.png'],
     creator: '@umbi',
   },
-  // verification: { google: 'ADD_YOUR_GOOGLE_SEARCH_CONSOLE_CODE_HERE' },
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || '',
+  },
   alternates: {
     canonical: 'https://umbi-blog.vercel.app',
   },
@@ -120,6 +123,7 @@ export default function RootLayout({
         <Navbar />
         {children}
         <Footer />
+        <CookieConsent />
         
         {/* Google Analytics */}
         <Script

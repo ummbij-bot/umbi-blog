@@ -3,10 +3,12 @@ import { posts } from '@/lib/posts';
 import Image from 'next/image';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
+import AuthorBox from '@/components/blog/AuthorBox';
+import ContentDisclaimer from '@/components/blog/ContentDisclaimer';
 const Comments = dynamic(() => import('@/components/Comments'), {
   loading: () => <div className="mt-16 pt-12 border-t border-neutral-200 text-center py-8 text-neutral-400">Loading comments...</div>,
 });
-import AdSense from '@/components/ads/AdSense';
+import { InArticleAd, DisplayAd } from '@/components/ads/AdSense';
 import BlogCard from '@/components/blog/BlogCard';
 import Script from 'next/script';
 import ReactMarkdown from 'react-markdown';
@@ -163,13 +165,14 @@ export default async function BlogPost({ params }: PageProps) {
 
             <h1 className="text-4xl md:text-5xl font-bold mb-6">{post.title}</h1>
 
-            <div className="flex items-center gap-4 text-neutral-600 mb-8 pb-8 border-b border-neutral-200">
-              <time>{post.date}</time>
-              <span>•</span>
-              <span>{post.readTime}</span>
-            </div>
+            <ContentDisclaimer
+              category={post.category}
+              date={post.date}
+              readTime={post.readTime}
+              wordCount={post.content.split(/\s+/).filter(Boolean).length}
+            />
 
-            <AdSense adSlot="auto" />
+            <InArticleAd adSlot="auto" />
 
             <div className="prose prose-lg max-w-none">
               <ReactMarkdown
@@ -195,7 +198,26 @@ export default async function BlogPost({ params }: PageProps) {
               </ReactMarkdown>
             </div>
 
-            <AdSense adSlot="auto" />
+            <InArticleAd adSlot="auto" />
+
+            {/* Author Profile */}
+            <AuthorBox author={post.author} date={post.date} />
+
+            {/* Interactive Tools CTA */}
+            <div className="mt-12 p-6 rounded-2xl bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-100">
+              <h3 className="text-lg font-bold text-purple-800 mb-2">Try Our Free Wellness Tools</h3>
+              <p className="text-purple-700 text-sm mb-4">Track your health metrics and get personalized wellness advice.</p>
+              <div className="flex flex-wrap gap-3">
+                <Link href="/wellness/tools/bmi-calculator" className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg text-sm font-semibold hover:bg-purple-700 transition-colors">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" /></svg>
+                  BMI Calculator
+                </Link>
+                <Link href="/wellness/tools/ai-coach" className="inline-flex items-center gap-2 px-4 py-2 bg-white text-purple-700 border border-purple-200 rounded-lg text-sm font-semibold hover:bg-purple-50 transition-colors">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
+                  AI Wellness Coach
+                </Link>
+              </div>
+            </div>
 
             <div className="mt-12 pt-8 border-t border-neutral-200">
               <Comments slug={post.slug} />

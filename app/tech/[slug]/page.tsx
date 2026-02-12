@@ -3,10 +3,12 @@ import { posts } from '@/lib/posts';
 import Image from 'next/image';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
+import AuthorBox from '@/components/blog/AuthorBox';
+import ContentDisclaimer from '@/components/blog/ContentDisclaimer';
 const Comments = dynamic(() => import('@/components/Comments'), {
   loading: () => <div className="mt-16 pt-12 border-t border-neutral-200 text-center py-8 text-neutral-400">Loading comments...</div>,
 });
-import AdSense from '@/components/ads/AdSense';
+import { InArticleAd, DisplayAd } from '@/components/ads/AdSense';
 import BlogCard from '@/components/blog/BlogCard';
 import Script from 'next/script';
 import ReactMarkdown from 'react-markdown';
@@ -163,13 +165,14 @@ export default async function BlogPost({ params }: PageProps) {
 
             <h1 className="text-4xl md:text-5xl font-bold mb-6">{post.title}</h1>
 
-            <div className="flex items-center gap-4 text-neutral-600 mb-8 pb-8 border-b border-neutral-200">
-              <time>{post.date}</time>
-              <span>•</span>
-              <span>{post.readTime}</span>
-            </div>
+            <ContentDisclaimer
+              category={post.category}
+              date={post.date}
+              readTime={post.readTime}
+              wordCount={post.content.split(/\s+/).filter(Boolean).length}
+            />
 
-            <AdSense adSlot="auto" />
+            <InArticleAd adSlot="auto" />
 
             <div className="prose prose-lg max-w-none">
               <ReactMarkdown
@@ -195,7 +198,22 @@ export default async function BlogPost({ params }: PageProps) {
               </ReactMarkdown>
             </div>
 
-            <AdSense adSlot="auto" />
+            <InArticleAd adSlot="auto" />
+
+            {/* Author Profile */}
+            <AuthorBox author={post.author} date={post.date} />
+
+            {/* Interactive Tools CTA */}
+            <div className="mt-12 p-6 rounded-2xl bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100">
+              <h3 className="text-lg font-bold text-blue-800 mb-2">Try Our Free Tech Tools</h3>
+              <p className="text-blue-700 text-sm mb-4">Get personalized tech recommendations from our AI-powered advisor.</p>
+              <div className="flex flex-wrap gap-3">
+                <Link href="/tech/tools/ai-advisor" className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 transition-colors">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                  AI Tech Advisor
+                </Link>
+              </div>
+            </div>
 
             <div className="mt-12 pt-8 border-t border-neutral-200">
               <Comments slug={post.slug} />
