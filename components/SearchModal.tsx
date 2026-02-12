@@ -134,6 +134,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                         src={post.image || '/placeholder.jpg'}
                         alt={post.title}
                         fill
+                        sizes="96px"
                         className="object-cover group-hover:scale-105 transition-transform"
                       />
                     </div>

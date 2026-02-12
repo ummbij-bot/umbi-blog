@@ -2,17 +2,53 @@ import BlogCard from '@/components/blog/BlogCard';
 import { getPostsByCategory } from '@/lib/posts';
 import { FiCpu, FiActivity, FiArrowRight } from 'react-icons/fi';
 import Link from 'next/link';
+import Script from 'next/script';
+import type { Metadata } from 'next';
+
 export const revalidate = 0;
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Tech & Productivity - Umbi',
-  description: 'Stay ahead with the latest technology trends, tools, and productivity hacks.',
+  description: 'Stay ahead with the latest technology trends, AI tools, productivity hacks, remote work setups, and software reviews. Expert guides for modern professionals.',
+  alternates: {
+    canonical: 'https://umbi-blog.vercel.app/tech',
+  },
+  openGraph: {
+    title: 'Tech & Productivity - Umbi',
+    description: 'Stay ahead with the latest technology trends, tools, and productivity hacks.',
+    url: 'https://umbi-blog.vercel.app/tech',
+    type: 'website',
+  },
 };
 
 export default function TechPage() {
   const posts = getPostsByCategory('tech');
 
+  const collectionSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'Tech & Productivity Articles',
+    description: 'Stay ahead with the latest technology trends, tools, and productivity hacks.',
+    url: 'https://umbi-blog.vercel.app/tech',
+    mainEntity: {
+      '@type': 'ItemList',
+      itemListElement: posts.map((post, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        url: `https://umbi-blog.vercel.app/tech/${post.slug}`,
+        name: post.title,
+      })),
+    },
+    isPartOf: {
+      '@type': 'WebSite',
+      name: 'Umbi',
+      url: 'https://umbi-blog.vercel.app',
+    },
+  };
+
   return (
+    <>
+    <Script id="collection-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionSchema) }} />
     <div style={{ backgroundColor: 'var(--color-neutral-50)', minHeight: '100vh' }}>
       <section className="py-16" style={{ background: 'linear-gradient(135deg, #3b82f6, #2563eb)' }}>
         <div className="container-custom">
@@ -23,9 +59,20 @@ export default function TechPage() {
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4" style={{ fontFamily: 'var(--font-display)' }}>
             Tech & Productivity
           </h1>
-          <p className="text-xl text-white opacity-90 max-w-2xl">
+          <p className="text-xl text-white opacity-90 max-w-2xl mb-6">
             Stay ahead with the latest technology trends, tools, and productivity hacks for modern life.
           </p>
+          <div className="text-white/80 max-w-3xl space-y-3 text-base leading-relaxed">
+            <p>
+              Welcome to Umbi&apos;s Tech &amp; Productivity hub — your go-to destination for navigating the rapidly evolving world of technology. From the latest AI tools reshaping how we work to essential cybersecurity practices that keep your data safe, we break down complex tech topics into clear, actionable guides that anyone can follow.
+            </p>
+            <p>
+              Our technology coverage spans a wide range of topics: artificial intelligence and machine learning applications, productivity software reviews and comparisons, remote work setup optimization, coding and development resources, cloud computing essentials, smartphone and gadget recommendations, and digital privacy best practices. We test and evaluate every tool we recommend, providing honest assessments backed by hands-on experience and real-world benchmarks.
+            </p>
+            <p>
+              Whether you&apos;re a seasoned developer looking for the next great tool or a non-technical professional wanting to boost your productivity, our articles are written to meet you where you are. We focus on practical value — not just features, but how technology can genuinely improve your daily workflow and long-term career growth.
+            </p>
+          </div>
         </div>
       </section>
 
@@ -103,5 +150,6 @@ export default function TechPage() {
         </div>
       </section>
     </div>
+    </>
   );
 }

@@ -1,21 +1,54 @@
 import { getPostsByCategory } from '@/lib/posts';
 import BlogCard from '@/components/blog/BlogCard';
 import Link from 'next/link';
+import Script from 'next/script';
 import { FiDollarSign, FiActivity, FiArrowRight } from 'react-icons/fi';
+import type { Metadata } from 'next';
 
-// Next.js App Router 캐싱 설정 (ISR/SSG 옵션에 따라 조정 가능)
 export const revalidate = 0;
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Personal Finance - Umbi',
-  description:
-    'Expert advice on budgeting, investing, saving, and building wealth.',
+  description: 'Expert advice on budgeting, investing, saving, and building wealth. Comprehensive guides on emergency funds, retirement planning, debt reduction, and smart money management.',
+  alternates: {
+    canonical: 'https://umbi-blog.vercel.app/finance',
+  },
+  openGraph: {
+    title: 'Personal Finance - Umbi',
+    description: 'Expert advice on budgeting, investing, saving, and building wealth.',
+    url: 'https://umbi-blog.vercel.app/finance',
+    type: 'website',
+  },
 };
 
 export default function FinancePage() {
   const posts = getPostsByCategory('finance');
 
+  const collectionSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'Personal Finance Articles',
+    description: 'Expert advice on budgeting, investing, saving, and building wealth.',
+    url: 'https://umbi-blog.vercel.app/finance',
+    mainEntity: {
+      '@type': 'ItemList',
+      itemListElement: posts.map((post, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        url: `https://umbi-blog.vercel.app/finance/${post.slug}`,
+        name: post.title,
+      })),
+    },
+    isPartOf: {
+      '@type': 'WebSite',
+      name: 'Umbi',
+      url: 'https://umbi-blog.vercel.app',
+    },
+  };
+
   return (
+    <>
+    <Script id="collection-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionSchema) }} />
     <div
       style={{ backgroundColor: 'var(--color-neutral-50)', minHeight: '100vh' }}
     >
@@ -37,10 +70,21 @@ export default function FinancePage() {
           >
             Personal Finance
           </h1>
-          <p className="text-xl text-white opacity-90 max-w-2xl">
+          <p className="text-xl text-white opacity-90 max-w-2xl mb-6">
             Master your money with expert advice on budgeting, investing, and
             building wealth.
           </p>
+          <div className="text-white/80 max-w-3xl space-y-3 text-base leading-relaxed">
+            <p>
+              Welcome to Umbi&apos;s Personal Finance hub — your comprehensive resource for taking control of your financial future. Whether you&apos;re just starting your financial journey or looking to optimize an existing strategy, our expert-written guides cover everything from foundational budgeting techniques to advanced investment strategies.
+            </p>
+            <p>
+              Our finance articles are crafted by contributors with backgrounds in certified financial planning (CFP) and chartered financial analysis (CFA). We cover essential topics including emergency fund building, debt reduction strategies, retirement planning with 401(k) and IRA accounts, stock market fundamentals, real estate investing, and tax optimization. Each article includes actionable steps, real-world data, comparison tables, and links to trusted sources so you can make informed decisions with confidence.
+            </p>
+            <p>
+              All content is for educational purposes only and should not replace professional financial advice. We recommend consulting a licensed financial advisor for personalized guidance tailored to your specific situation.
+            </p>
+          </div>
         </div>
       </section>
 
@@ -143,5 +187,6 @@ export default function FinancePage() {
         </div>
       </section>
     </div>
+    </>
   );
 }

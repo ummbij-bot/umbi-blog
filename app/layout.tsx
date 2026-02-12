@@ -1,14 +1,16 @@
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import type { Metadata, Viewport } from 'next';
+import localFont from 'next/font/local';
 import './globals.css';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/layout/Footer';
+import CookieConsent from '@/components/CookieConsent';
 import Script from 'next/script';
 
-const inter = Inter({ 
-  subsets: ['latin'],
+const inter = localFont({
+  src: '../public/fonts/Inter-Variable.woff2',
   display: 'swap',
   preload: true,
+  variable: '--font-inter',
 });
 
 export const metadata: Metadata = {
@@ -62,11 +64,21 @@ export const metadata: Metadata = {
     creator: '@umbi',
   },
   verification: {
-    google: 'YOUR_GOOGLE_VERIFICATION_CODE',
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || '',
   },
   alternates: {
     canonical: 'https://umbi-blog.vercel.app',
   },
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+    { media: '(prefers-color-scheme: dark)', color: '#0f172a' },
+  ],
 };
 
 export default function RootLayout({
@@ -77,6 +89,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        {/* Google AdSense */}
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6470985227057240"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
         {/* Organization Schema */}
         <Script
           id="organization-schema"
@@ -87,20 +106,24 @@ export default function RootLayout({
               '@type': 'Organization',
               name: 'Umbi',
               url: 'https://umbi-blog.vercel.app',
-              logo: 'https://umbi-blog.vercel.app/logo.png',
-              description: 'Expert advice on personal finance, technology, and wellness',
+              logo: {
+                '@type': 'ImageObject',
+                url: 'https://umbi-blog.vercel.app/logo.png',
+              },
+              description: 'Expert advice on personal finance, technology, and wellness. Actionable insights to help you make better decisions in life.',
+              email: 'ummbij@gmail.com',
               sameAs: [
-                'https://twitter.com/umbi',
-                'https://linkedin.com/company/umbi',
+                'https://github.com/ummbij-bot/umbi-blog',
               ],
             }),
           }}
         />
       </head>
-      <body className={inter.className}>
+      <body className={`${inter.className} ${inter.variable}`}>
         <Navbar />
-        <main>{children}</main>
+        {children}
         <Footer />
+        <CookieConsent />
         
         {/* Google Analytics */}
         <Script

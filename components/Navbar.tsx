@@ -3,7 +3,8 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { FiMenu, FiX, FiChevronDown, FiSearch } from 'react-icons/fi';
-import SearchModal from './SearchModal';
+import dynamic from 'next/dynamic';
+const SearchModal = dynamic(() => import('./SearchModal'), { ssr: false });
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
