@@ -10,7 +10,7 @@ import TableOfContents from '@/components/blog/TableOfContents';
 import ShareButtons from '@/components/blog/ShareButtons';
 import NewsletterCTA from '@/components/blog/NewsletterCTA';
 const Comments = dynamic(() => import('@/components/Comments'), {
-  loading: () => <div className="mt-16 pt-12 border-t border-neutral-200 text-center py-8 text-neutral-400">Loading comments...</div>,
+  loading: () => <div className="mt-16 pt-12 border-t border-stone-200 text-center py-8 text-stone-400">Loading comments...</div>,
 });
 import { InArticleAd } from '@/components/ads/AdSense';
 import BlogCard from '@/components/blog/BlogCard';
@@ -135,20 +135,20 @@ export default async function BlogPost({ params }: PageProps) {
       <Script id="breadcrumb-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <Script id="article-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
 
-      <article className="min-h-screen bg-neutral-50">
-        <div className="bg-white border-b border-neutral-200">
-          <div className="container-custom py-4">
+      <article className="min-h-screen bg-[#fefdfb]">
+        <div className="bg-white border-b border-stone-200">
+          <div className="container-custom py-3">
             <nav className="flex items-center gap-2 text-sm">
-              <Link href="/" className="text-neutral-500 hover:text-neutral-900 transition-colors">Home</Link>
-              <span className="text-neutral-300">/</span>
-              <Link href="/tech" className="text-neutral-500 hover:text-neutral-900 transition-colors">Tech</Link>
-              <span className="text-neutral-300">/</span>
-              <span className="text-neutral-900 font-medium line-clamp-1">{post.title}</span>
+              <Link href="/" className="text-stone-400 hover:text-stone-700 transition-colors">Home</Link>
+              <span className="text-stone-300">/</span>
+              <Link href="/tech" className="text-stone-400 hover:text-stone-700 transition-colors">Tech</Link>
+              <span className="text-stone-300">/</span>
+              <span className="text-stone-700 font-medium line-clamp-1">{post.title}</span>
             </nav>
           </div>
         </div>
 
-        <div className="relative w-full aspect-[21/9] max-h-[500px] bg-neutral-900">
+        <div className="relative w-full aspect-[2/1] max-h-[420px] bg-stone-900">
           <Image
             src={post.image || '/placeholder.jpg'}
             alt={post.title}
@@ -157,7 +157,7 @@ export default async function BlogPost({ params }: PageProps) {
             sizes="100vw"
             className="object-cover opacity-80"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-blue-900/70 via-black/20 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10">
             <div className="container-custom">
               <div className="max-w-3xl">
@@ -181,9 +181,9 @@ export default async function BlogPost({ params }: PageProps) {
         <div className="container-custom py-10">
           <div className="max-w-3xl mx-auto">
             {/* Share + Meta bar */}
-            <div className="flex items-center justify-between mb-8 pb-6 border-b border-neutral-200">
-              <div className="text-sm text-neutral-500">
-                By <span className="font-medium text-neutral-700">{post.author}</span>
+            <div className="flex items-center justify-between mb-8 pb-6 border-b border-stone-200">
+              <div className="text-sm text-stone-500">
+                By <span className="font-medium text-stone-700">{post.author}</span>
               </div>
               <ShareButtons title={post.title} slug={post.slug} category="tech" />
             </div>
@@ -210,15 +210,15 @@ export default async function BlogPost({ params }: PageProps) {
                   h2: ({ children, ...props }) => {
                     const text = String(children);
                     const id = text.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').slice(0, 60);
-                    return <h2 id={id} className="text-2xl md:text-3xl font-bold mt-12 mb-4 text-neutral-900" {...props}>{children}</h2>;
+                    return <h2 id={id} className="text-2xl md:text-3xl font-bold mt-12 mb-4 text-stone-900" {...props}>{children}</h2>;
                   },
                   h3: ({ children, ...props }) => {
                     const text = String(children);
                     const id = text.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').slice(0, 60);
-                    return <h3 id={id} className="text-xl font-bold mt-8 mb-3 text-neutral-800" {...props}>{children}</h3>;
+                    return <h3 id={id} className="text-xl font-bold mt-8 mb-3 text-stone-800" {...props}>{children}</h3>;
                   },
-                  p: (props) => <p className="mb-4 leading-relaxed text-neutral-700" {...props} />,
-                  blockquote: (props) => <blockquote className="border-l-4 border-blue-500 pl-4 my-6 text-neutral-600 italic" {...props} />,
+                  p: (props) => <p className="mb-4 leading-relaxed text-stone-700" {...props} />,
+                  blockquote: (props) => <blockquote className="border-l-4 border-blue-500 pl-4 my-6 text-stone-600 italic" {...props} />,
                   table: (props) => <div className="overflow-x-auto my-6"><table className="min-w-full" {...props} /></div>,
                 }}
               >
@@ -227,8 +227,8 @@ export default async function BlogPost({ params }: PageProps) {
             </div>
 
             {/* Bottom share */}
-            <div className="flex items-center justify-between mt-10 pt-6 border-t border-neutral-200">
-              <span className="text-sm text-neutral-500">Enjoyed this article?</span>
+            <div className="flex items-center justify-between mt-10 pt-6 border-t border-stone-200">
+              <span className="text-sm text-stone-500">Enjoyed this article?</span>
               <ShareButtons title={post.title} slug={post.slug} category="tech" />
             </div>
 
@@ -251,12 +251,12 @@ export default async function BlogPost({ params }: PageProps) {
 
             <NewsletterCTA />
 
-            <div className="mt-8 pt-8 border-t border-neutral-200">
+            <div className="mt-8 pt-8 border-t border-stone-200">
                <Comments slug={post.slug} />
             </div>
 
             {relatedPosts.length > 0 && (
-              <div className="mt-16 pt-8 border-t border-neutral-200">
+              <div className="mt-16 pt-8 border-t border-stone-200">
                 <h2 className="text-2xl font-bold mb-6" style={{ fontFamily: 'var(--font-display)' }}>
                   Related Articles
                 </h2>

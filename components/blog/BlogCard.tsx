@@ -8,56 +8,75 @@ interface BlogCardProps {
   category: string;
   slug: string;
   image?: string;
-  priority?: boolean; // LCP 경고 해결을 위한 옵션 추가
+  priority?: boolean;
 }
 
+const categoryStyles: Record<string, { badge: string; accent: string; glow: string }> = {
+  finance: {
+    badge: 'bg-emerald-100 text-emerald-700',
+    accent: 'text-emerald-600',
+    glow: 'hover:shadow-[0_4px_20px_rgba(16,185,129,0.12)]',
+  },
+  tech: {
+    badge: 'bg-blue-100 text-blue-700',
+    accent: 'text-blue-600',
+    glow: 'hover:shadow-[0_4px_20px_rgba(59,130,246,0.12)]',
+  },
+  wellness: {
+    badge: 'bg-purple-100 text-purple-700',
+    accent: 'text-purple-600',
+    glow: 'hover:shadow-[0_4px_20px_rgba(147,51,234,0.12)]',
+  },
+};
+
 export default function BlogCard({ title, excerpt, date, category, slug, image, priority = false }: BlogCardProps) {
+  const catKey = category.toLowerCase();
+  const style = categoryStyles[catKey] || { badge: 'bg-stone-100 text-stone-700', accent: 'text-stone-600', glow: '' };
+
   return (
-    <article className="card group h-full flex flex-col">
+    <article className={`card group h-full flex flex-col ${style.glow}`}>
       {image && (
-        <div className="relative h-48 overflow-hidden">
+        <div className="relative h-48 overflow-hidden bg-stone-100">
           <Image
             src={image}
             alt={title}
             fill
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
-            // 경고 해결 1: 화면 크기에 따라 적절한 이미지 크기를 다운로드하도록 설정
+            className="object-cover transition-transform duration-700 group-hover:scale-105"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            // 경고 해결 2: 중요한 이미지(LCP)는 즉시 로딩
             priority={priority}
           />
-        </div>
-      )}
-      <div className="p-6 flex flex-col flex-grow">
-        <div className="flex items-center gap-3 mb-3">
-          <span className="text-xs font-semibold px-3 py-1 rounded-full" 
-                style={{ backgroundColor: 'var(--color-primary-100)', color: 'var(--color-primary-700)' }}>
+          <span className={`absolute top-3 left-3 px-2.5 py-1 rounded-lg text-xs font-bold ${style.badge}`}>
             {category}
           </span>
-          <span className="text-sm" style={{ color: 'var(--color-neutral-500)' }}>
-            {date}
-          </span>
         </div>
-        
-        <Link href={`/${category.toLowerCase()}/${slug}`} className="block">
-          <h3 className="text-xl font-bold mb-3 transition-colors group-hover:text-[#0284c7]" 
-              style={{ fontFamily: 'var(--font-display)', color: 'var(--color-neutral-900)' }}>
+      )}
+      <div className="p-5 flex flex-col flex-grow">
+        <div className="flex items-center gap-2 mb-2">
+          {!image && (
+            <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${style.badge}`}>
+              {category}
+            </span>
+          )}
+          <span className="text-xs text-stone-400">{date}</span>
+        </div>
+
+        <Link href={`/${catKey}/${slug}`} className="block">
+          <h3 className="text-lg font-bold mb-2 transition-colors group-hover:text-stone-600 text-stone-900 leading-snug line-clamp-2">
              {title}
           </h3>
         </Link>
-        
-        <p className="mb-4 flex-grow line-clamp-3" style={{ color: 'var(--color-neutral-600)' }}>
+
+        <p className="text-sm text-stone-500 mb-4 flex-grow line-clamp-2 leading-relaxed">
           {excerpt}
         </p>
-        
-        <Link 
-          href={`/${category.toLowerCase()}/${slug}`}
-          className="inline-flex items-center gap-2 font-semibold mt-auto"
-          style={{ color: 'var(--color-primary-600)' }}
+
+        <Link
+          href={`/${catKey}/${slug}`}
+          className={`inline-flex items-center gap-1.5 text-sm font-semibold mt-auto pt-3 border-t border-stone-100 ${style.accent}`}
         >
           Read More
-          <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          <svg className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
           </svg>
         </Link>
       </div>
