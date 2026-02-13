@@ -5,63 +5,65 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer style={{ backgroundColor: 'var(--color-neutral-900)', color: 'var(--color-neutral-300)' }}>
-      <div className="container-custom py-12 md:py-16">
+    <footer className="bg-stone-900 text-stone-400">
+      {/* Gradient top border */}
+      <div className="h-[2px] bg-gradient-to-r from-emerald-500 via-blue-500 to-purple-500" />
+
+      <div className="container-custom py-14 md:py-16">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
           <div className="col-span-2 md:col-span-1">
-            <Link href="/" className="flex items-center gap-2 mb-4">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center"
-                   style={{ background: 'linear-gradient(135deg, var(--color-primary-500), var(--color-primary-700))' }}>
-                <span className="text-white font-bold text-xl">U</span>
+            <Link href="/" className="flex items-center gap-2.5 mb-3 group">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-600 text-white flex items-center justify-center font-bold text-lg group-hover:scale-105 transition-transform">
+                U
               </div>
-              <span className="font-bold text-2xl text-white">umbi</span>
+              <span className="font-extrabold text-xl text-white tracking-tight">umbi</span>
             </Link>
-            <p className="text-sm mb-6" style={{ color: 'var(--color-neutral-400)' }}>
+            <p className="text-sm text-stone-500 mb-1 italic">Better decisions, every day.</p>
+            <p className="text-sm text-stone-500 mb-6 leading-relaxed">
               Your source for insightful articles on finance, technology, and wellness.
             </p>
 
-            <div className="flex gap-4">
-              <a href="https://github.com/ummbij-bot/umbi-blog" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-lg flex items-center justify-center hover:opacity-80 transition-opacity" style={{ backgroundColor: 'var(--color-neutral-800)' }}>
-                <FiGithub size={20} />
+            <div className="flex gap-3">
+              <a href="https://github.com/ummbij-bot/umbi-blog" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-lg bg-stone-800 flex items-center justify-center hover:bg-emerald-600 hover:scale-110 transition-all duration-200 text-stone-400 hover:text-white">
+                <FiGithub size={18} />
               </a>
-              <a href="mailto:ummbij@gmail.com" className="w-10 h-10 rounded-lg flex items-center justify-center hover:opacity-80 transition-opacity" style={{ backgroundColor: 'var(--color-neutral-800)' }}>
-                <FiMail size={20} />
+              <a href="mailto:ummbij@gmail.com" className="w-9 h-9 rounded-lg bg-stone-800 flex items-center justify-center hover:bg-emerald-600 hover:scale-110 transition-all duration-200 text-stone-400 hover:text-white">
+                <FiMail size={18} />
               </a>
             </div>
           </div>
 
           <div>
-            <h3 className="font-semibold text-white mb-4">Categories</h3>
-            <ul className="space-y-3">
-              <li><Link href="/finance" className="text-sm">Personal Finance</Link></li>
-              <li><Link href="/tech" className="text-sm">Tech & Productivity</Link></li>
-              <li><Link href="/wellness" className="text-sm">Health & Wellness</Link></li>
+            <h3 className="text-sm font-semibold text-white mb-4 tracking-wide">Categories</h3>
+            <ul className="space-y-2.5">
+              <li><Link href="/finance" className="text-sm hover:text-emerald-400 transition-colors">Personal Finance</Link></li>
+              <li><Link href="/tech" className="text-sm hover:text-blue-400 transition-colors">Tech & Productivity</Link></li>
+              <li><Link href="/wellness" className="text-sm hover:text-purple-400 transition-colors">Health & Wellness</Link></li>
             </ul>
           </div>
 
           <div>
-            <h3 className="font-semibold text-white mb-4">Company</h3>
-            <ul className="space-y-3">
-              <li><Link href="/about" className="text-sm">About Us</Link></li>
-              <li><Link href="/contact" className="text-sm">Contact</Link></li>
+            <h3 className="text-sm font-semibold text-white mb-4 tracking-wide">Company</h3>
+            <ul className="space-y-2.5">
+              <li><Link href="/about" className="text-sm hover:text-white transition-colors">About Us</Link></li>
+              <li><Link href="/contact" className="text-sm hover:text-white transition-colors">Contact</Link></li>
             </ul>
           </div>
 
           <div>
-            <h3 className="font-semibold text-white mb-4">Legal</h3>
-            <ul className="space-y-3">
-              <li><Link href="/privacy" className="text-sm">Privacy Policy</Link></li>
-              <li><Link href="/terms" className="text-sm">Terms of Service</Link></li>
+            <h3 className="text-sm font-semibold text-white mb-4 tracking-wide">Legal</h3>
+            <ul className="space-y-2.5">
+              <li><Link href="/privacy" className="text-sm hover:text-white transition-colors">Privacy Policy</Link></li>
+              <li><Link href="/terms" className="text-sm hover:text-white transition-colors">Terms of Service</Link></li>
             </ul>
           </div>
         </div>
 
-        <div className="pt-8 flex flex-col md:flex-row justify-between items-center gap-4"
-             style={{ borderTop: '1px solid var(--color-neutral-800)' }}>
-          <p className="text-sm" style={{ color: 'var(--color-neutral-400)' }}>
+        <div className="pt-8 border-t border-stone-800 flex flex-col md:flex-row justify-between items-center gap-3">
+          <p className="text-xs text-stone-500">
             © {currentYear} Umbi. All rights reserved.
           </p>
-          <p className="text-sm" style={{ color: 'var(--color-neutral-400)' }}>
+          <p className="text-xs text-stone-600">
             Built with Next.js & Tailwind CSS
           </p>
         </div>
