@@ -2,184 +2,156 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-
-interface PostSummary {
-  slug: string;
-  title: string;
-  excerpt: string;
-  category: string;
-  author: string;
-  date: string;
-  readTime: string;
-  image?: string;
-}
-
-interface PostsResponse {
-  posts: PostSummary[];
-  total: number;
-  page: number;
-  totalPages: number;
-}
+import { getAllPostsFromDB, deletePost } from '@/lib/firestore-posts';
+import { posts as staticPosts } from '@/lib/posts';
+import type { Post } from '@/lib/post-types';
 
 export default function AdminPostsPage() {
-  const [data, setData] = useState<PostsResponse | null>(null);
+  const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('all');
-  const [page, setPage] = useState(1);
+  const [deletingSlug, setDeletingSlug] = useState<string | null>(null);
+  const [source, setSource] = useState<'firestore' | 'static'>('static');
 
   useEffect(() => {
-    fetchPosts();
-  }, [search, category, page]);
+    loadPosts();
+  }, []);
 
-  async function fetchPosts() {
-    setLoading(true);
-    const params = new URLSearchParams({ page: String(page), limit: '15' });
-    if (category !== 'all') params.set('category', category);
-    if (search) params.set('search', search);
-
+  async function loadPosts() {
     try {
-      const res = await fetch(`/api/admin/posts?${params}`);
-      const json = await res.json();
-      setData(json);
+      const firestorePosts = await getAllPostsFromDB();
+      if (firestorePosts.length > 0) {
+        setPosts(firestorePosts);
+        setSource('firestore');
+      } else {
+        setPosts(staticPosts);
+        setSource('static');
+      }
     } catch {
-      console.error('Failed to fetch posts');
-    } finally {
-      setLoading(false);
+      setPosts(staticPosts);
+      setSource('static');
     }
+    setLoading(false);
   }
 
-  const categories = [
-    { value: 'all', label: 'All' },
-    { value: 'finance', label: 'Finance', color: 'emerald' },
-    { value: 'tech', label: 'Tech', color: 'blue' },
-    { value: 'wellness', label: 'Wellness', color: 'purple' },
-  ];
+  async function handleDelete(slug: string) {
+    if (!confirm(`Delete "${slug}"? This cannot be undone.`)) return;
+    setDeletingSlug(slug);
+    try {
+      await deletePost(slug);
+      setPosts(prev => prev.filter(p => p.slug !== slug));
+    } catch {
+      alert('Failed to delete post. Make sure you are reading from Firestore.');
+    }
+    setDeletingSlug(null);
+  }
 
-  const getCategoryBadge = (cat: string) => {
-    const colors: Record<string, string> = {
-      finance: 'bg-emerald-600/20 text-emerald-400',
-      tech: 'bg-blue-600/20 text-blue-400',
-      wellness: 'bg-purple-600/20 text-purple-400',
-    };
-    return colors[cat] || 'bg-stone-700 text-stone-400';
-  };
+  const filtered = posts.filter(p => {
+    const matchCat = category === 'all' || p.category === category;
+    const matchSearch = !search ||
+      p.title.toLowerCase().includes(search.toLowerCase()) ||
+      p.excerpt.toLowerCase().includes(search.toLowerCase());
+    return matchCat && matchSearch;
+  });
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-stone-100">Posts</h1>
+        <div>
+          <h1 className="text-2xl font-bold text-stone-100">Posts</h1>
+          <p className="text-stone-500 text-sm mt-1">
+            {posts.length} posts · source:{' '}
+            <span className={source === 'firestore' ? 'text-emerald-400' : 'text-amber-400'}>
+              {source === 'firestore' ? 'Firestore' : 'Static files'}
+            </span>
+          </p>
+        </div>
         <Link href="/admin/posts/new" className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium rounded-lg transition-colors">
           + New Post
         </Link>
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-4">
+      <div className="flex gap-3">
         <input
           type="text"
-          value={search}
-          onChange={(e) => { setSearch(e.target.value); setPage(1); }}
           placeholder="Search posts..."
-          className="flex-1 px-4 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-stone-100 placeholder-stone-500 focus:outline-none focus:border-emerald-500 text-sm"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          className="flex-1 px-4 py-2 bg-stone-800 border border-stone-700 rounded-lg text-stone-100 placeholder-stone-500 focus:outline-none focus:border-emerald-500 text-sm"
         />
-        <div className="flex gap-1 bg-stone-800 rounded-lg p-1 border border-stone-700">
-          {categories.map(cat => (
-            <button
-              key={cat.value}
-              onClick={() => { setCategory(cat.value); setPage(1); }}
-              className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
-                category === cat.value
-                  ? 'bg-stone-700 text-stone-100'
-                  : 'text-stone-400 hover:text-stone-200'
-              }`}
-            >
-              {cat.label}
-            </button>
+        <select
+          value={category}
+          onChange={e => setCategory(e.target.value)}
+          className="px-4 py-2 bg-stone-800 border border-stone-700 rounded-lg text-stone-100 focus:outline-none focus:border-emerald-500 text-sm"
+        >
+          <option value="all">All Categories</option>
+          <option value="finance">Finance</option>
+          <option value="tech">Tech</option>
+          <option value="wellness">Wellness</option>
+        </select>
+      </div>
+
+      {/* Posts List */}
+      {loading ? (
+        <div className="space-y-3">
+          {[1,2,3,4,5].map(i => (
+            <div key={i} className="h-20 bg-stone-800 rounded-xl animate-pulse" />
           ))}
         </div>
-      </div>
-
-      {/* Posts Table */}
-      <div className="bg-stone-800 rounded-xl border border-stone-700 overflow-hidden">
-        {loading ? (
-          <div className="p-8 text-center">
-            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-emerald-500 mx-auto" />
-          </div>
-        ) : data && data.posts.length > 0 ? (
-          <>
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-stone-700">
-                    <th className="text-left text-xs font-medium text-stone-400 uppercase tracking-wider px-6 py-3">Title</th>
-                    <th className="text-left text-xs font-medium text-stone-400 uppercase tracking-wider px-6 py-3 hidden md:table-cell">Category</th>
-                    <th className="text-left text-xs font-medium text-stone-400 uppercase tracking-wider px-6 py-3 hidden lg:table-cell">Author</th>
-                    <th className="text-left text-xs font-medium text-stone-400 uppercase tracking-wider px-6 py-3 hidden sm:table-cell">Date</th>
-                    <th className="text-right text-xs font-medium text-stone-400 uppercase tracking-wider px-6 py-3">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-stone-700/50">
-                  {data.posts.map(post => (
-                    <tr key={post.slug} className="hover:bg-stone-700/30 transition-colors">
-                      <td className="px-6 py-4">
-                        <p className="text-stone-200 text-sm font-medium truncate max-w-xs">{post.title}</p>
-                        <p className="text-stone-500 text-xs truncate max-w-xs mt-0.5 md:hidden">{post.category}</p>
-                      </td>
-                      <td className="px-6 py-4 hidden md:table-cell">
-                        <span className={`px-2 py-0.5 text-xs rounded-full ${getCategoryBadge(post.category)}`}>
-                          {post.category}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 hidden lg:table-cell">
-                        <span className="text-stone-400 text-sm">{post.author}</span>
-                      </td>
-                      <td className="px-6 py-4 hidden sm:table-cell">
-                        <span className="text-stone-400 text-sm">{post.date}</span>
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <div className="flex items-center justify-end gap-2">
-                          <Link href={`/${post.category}/${post.slug}`} target="_blank"
-                            className="px-2 py-1 text-xs text-stone-400 hover:text-stone-100 transition-colors" title="View">
-                            View
-                          </Link>
-                          <Link href={`/admin/posts/${post.slug}`}
-                            className="px-2 py-1 text-xs text-emerald-400 hover:text-emerald-300 transition-colors" title="Edit">
-                            Edit
-                          </Link>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            {/* Pagination */}
-            {data.totalPages > 1 && (
-              <div className="flex items-center justify-between px-6 py-3 border-t border-stone-700">
-                <span className="text-stone-500 text-sm">
-                  Showing {(data.page - 1) * 15 + 1}-{Math.min(data.page * 15, data.total)} of {data.total}
-                </span>
-                <div className="flex gap-1">
-                  <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}
-                    className="px-3 py-1 text-sm text-stone-400 hover:text-stone-100 disabled:text-stone-600 transition-colors">
-                    Prev
-                  </button>
-                  <button onClick={() => setPage(p => Math.min(data.totalPages, p + 1))} disabled={page === data.totalPages}
-                    className="px-3 py-1 text-sm text-stone-400 hover:text-stone-100 disabled:text-stone-600 transition-colors">
-                    Next
-                  </button>
+      ) : (
+        <div className="space-y-2">
+          {filtered.map(post => (
+            <div key={post.slug} className="flex items-center gap-4 p-4 bg-stone-800 border border-stone-700 rounded-xl hover:border-stone-600 transition-colors group">
+              {post.image && (
+                <img src={post.image} alt="" className="w-16 h-12 object-cover rounded-lg shrink-0" />
+              )}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className={`px-2 py-0.5 text-xs rounded-full ${
+                    post.category === 'finance' ? 'bg-emerald-600/20 text-emerald-400' :
+                    post.category === 'tech' ? 'bg-blue-600/20 text-blue-400' :
+                    'bg-purple-600/20 text-purple-400'
+                  }`}>
+                    {post.category}
+                  </span>
+                  <span className="text-stone-500 text-xs">{post.date}</span>
+                  <span className="text-stone-600 text-xs">{post.readTime}</span>
                 </div>
+                <p className="text-stone-100 font-medium text-sm mt-1 truncate">{post.title}</p>
+                <p className="text-stone-500 text-xs truncate">{post.excerpt}</p>
               </div>
-            )}
-          </>
-        ) : (
-          <div className="p-8 text-center text-stone-500">
-            No posts found
-          </div>
-        )}
-      </div>
+              <div className="flex items-center gap-2 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                <Link
+                  href={`/${post.category}/${post.slug}`}
+                  target="_blank"
+                  className="px-3 py-1.5 text-xs text-stone-400 hover:text-stone-100 bg-stone-700 rounded-lg transition-colors"
+                >
+                  View
+                </Link>
+                <Link
+                  href={`/admin/posts/${post.slug}`}
+                  className="px-3 py-1.5 text-xs text-stone-400 hover:text-emerald-400 bg-stone-700 rounded-lg transition-colors"
+                >
+                  Edit
+                </Link>
+                <button
+                  onClick={() => handleDelete(post.slug)}
+                  disabled={deletingSlug === post.slug || source === 'static'}
+                  title={source === 'static' ? 'Migrate to Firestore first' : 'Delete'}
+                  className="px-3 py-1.5 text-xs text-stone-400 hover:text-red-400 bg-stone-700 disabled:opacity-40 rounded-lg transition-colors"
+                >
+                  {deletingSlug === post.slug ? '...' : 'Delete'}
+                </button>
+              </div>
+            </div>
+          ))}
+          {filtered.length === 0 && (
+            <div className="text-center py-12 text-stone-500">No posts found</div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
