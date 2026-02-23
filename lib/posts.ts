@@ -1,16 +1,11 @@
-export interface Post {
-  slug: string;
-  title: string;
-  excerpt: string;
-  content: string;
-  date: string;
-  category: 'finance' | 'tech' | 'wellness';
-  author: string;
-  readTime: string;
-  image?: string;
-}
+import { newFinancePosts } from './new-finance-posts';
+import { newTechPosts } from './new-tech-posts';
+import { newWellnessPosts } from './new-wellness-posts';
 
-export const posts: Post[] = [
+export type { Post } from './post-types';
+import type { Post } from './post-types';
+
+const basePosts: Post[] = [
   // Finance Posts
   {
     slug: '10-ways-save-money',
@@ -9082,6 +9077,13 @@ In many US states it is now **illegal for employers to ask** (California, New Yo
     author: 'Michael Chen',
     readTime: '16 min read',
   },
+];
+
+export const posts: Post[] = [
+  ...basePosts,
+  ...newFinancePosts,
+  ...newTechPosts,
+  ...newWellnessPosts,
 ];
 
 export function getPostBySlug(
