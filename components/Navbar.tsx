@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { FiMenu, FiX, FiChevronDown, FiSearch } from 'react-icons/fi';
 import dynamic from 'next/dynamic';
+import ThemeToggle from './ThemeToggle';
 const SearchModal = dynamic(() => import('./SearchModal'), { ssr: false });
 
 export default function Navbar() {
@@ -88,12 +89,13 @@ export default function Navbar() {
                 </Link>
               ))}
 
+              <ThemeToggle />
               <button
                 onClick={() => setIsSearchOpen(true)}
-                className="p-2 rounded-lg hover:bg-stone-100 transition-colors"
+                className="p-2 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
                 title="Search (Cmd/Ctrl + K)"
               >
-                <FiSearch size={18} className="text-stone-400 hover:text-stone-600 transition-colors" />
+                <FiSearch size={18} className="text-stone-400 hover:text-stone-600 dark:hover:text-stone-300 transition-colors" />
               </button>
 
               <div className="relative">

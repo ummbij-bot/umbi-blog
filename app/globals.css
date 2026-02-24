@@ -50,6 +50,17 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* ─── Dark mode ─── */
+.dark body,
+:is(.dark) body {
+  background-color: #0c0a09;
+  color: #e7e5e4;
+}
+
+.dark {
+  color-scheme: dark;
+}
+
 /* ─── Typography hierarchy ─── */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);

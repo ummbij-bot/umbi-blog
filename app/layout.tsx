@@ -4,6 +4,7 @@ import './globals.css';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/layout/Footer';
 import CookieConsent from '@/components/CookieConsent';
+import ThemeProvider from '@/components/ThemeProvider';
 import Script from 'next/script';
 
 const inter = localFont({
@@ -87,7 +88,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         {/* Google AdSense */}
         <Script
@@ -120,10 +121,12 @@ export default function RootLayout({
         />
       </head>
       <body className={`${inter.className} ${inter.variable}`}>
-        <Navbar />
-        {children}
-        <Footer />
-        <CookieConsent />
+        <ThemeProvider>
+          <Navbar />
+          {children}
+          <Footer />
+          <CookieConsent />
+        </ThemeProvider>
         
         {/* Google Analytics */}
         <Script
