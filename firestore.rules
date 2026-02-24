@@ -1,0 +1,24 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Posts collection - public read, admin write
+    match /posts/{slug} {
+      allow read: if true;
+      allow create, update, delete: if request.auth != null;
+    }
+
+    // View counts - public read, anyone can increment
+    match /post_views/{slug} {
+      allow read: if true;
+      allow create: if true;
+      allow update: if request.resource.data.views == resource.data.views + 1;
+    }
+
+    // Deny everything else
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
